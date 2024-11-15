@@ -1,7 +1,5 @@
-
 import java.io.*;
 import java.util.*;
-
 public class EIUDFS1 {
 
     static InputReader sc;
@@ -62,20 +60,6 @@ public class EIUDFS1 {
         public void addNeighbor(Vertex v) {
             adjecentVertices.add(v);
         }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof Vertex) {
-                return ((Vertex) obj).id == id;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return id;
-        }
-
     }
 
     static class InputReader {

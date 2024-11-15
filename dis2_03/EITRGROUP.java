@@ -1,42 +1,91 @@
+package dis2_03;
 
 import java.io.*;
 import java.util.*;
 
-public class sc {
+public class EITRGROUP {
 
     static InputReader sc;
-    static StringBuilder sb;
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-        sb = new StringBuilder();
+
+        Vertex[] graph = readGraph();
+        Vertex root = null;
+
+        for (Vertex v : graph) {
+            if (v.parent == null) {
+                root = v;
+                break;
+            }
+        }
+
+        bfs(root);
+
+        int maxLevel = -1;
+        for (Vertex v : graph) {
+            if (v != null && v.level > maxLevel) {
+                maxLevel = v.level;
+            }
+        }
+        sb.append(maxLevel + 1);
+        System.out.println(sb);
+    }
+
+    static void bfs(Vertex v) {
+        Queue<Vertex> q = new ArrayDeque<>();
+        q.add(v);
+        v.level = 0;
+        v.visited = true;
+
+        while (!q.isEmpty()) {
+            Vertex w = q.poll();
+
+            for (Vertex x : w.adjacentVertices) {
+                if (!x.visited) {
+                    x.visited = true;
+                    x.level = w.level + 1;
+                    q.add(x);
+                }
+            }
+        }
+    }
+
+    static Vertex[] readGraph() {
         int nVertices = sc.nextInt();
         int nEdges = sc.nextInt();
-        int q = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[nVertices + 1];
-        for (int i = 1; i <= nVertices; ++i) {
+        Vertex[] vertices = new Vertex[nVertices];
+        for (int i = 0; i < nVertices; ++i) {
             vertices[i] = new Vertex(i);
         }
+
         for (int i = 0; i < nEdges; ++i) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-
-            vertices[v].addAdjecentVertex(vertices[u]);
-        }
-
-        for (int i = 0; i < q; ++i) {
             int a = sc.nextInt();
             int b = sc.nextInt();
-            Vertex vertexA = vertices[a];
-            Vertex vertexB = vertices[b];
-            String result = "N";
-            if (vertexA.adjecenVertices.contains(vertexB)) {
-                result = "Y";
-            }
-            sb.append(result + "\n");
+
+            vertices[a].addAdjacentVertices(vertices[b]);
+            vertices[b].parent = vertices[a];
         }
-        System.out.println(sb);
+
+        return vertices;
+    }
+
+    static class Vertex {
+        int id;
+        boolean visited = false;
+        Vertex parent = null;
+        int level = 0;
+        List<Vertex> adjacentVertices = new ArrayList<>();
+
+        Vertex(int id) {
+            this.id = id;
+        }
+
+        void addAdjacentVertices(Vertex vertex) {
+            adjacentVertices.add(vertex);
+        }
     }
 
     static class InputReader {

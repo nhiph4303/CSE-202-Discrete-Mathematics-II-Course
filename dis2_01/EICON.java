@@ -1,8 +1,6 @@
 // input u and v, output v -> u 
-
 import java.io.*; 
 import java.util.*;
-
 public class EICON {
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();

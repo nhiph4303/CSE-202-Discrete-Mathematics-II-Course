@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.util.*;
 
@@ -9,12 +8,68 @@ public class EIUDBS1 {
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
-       
+        Vertex[] graph = readGraph();
+        bfs(graph[0]);
         System.out.println(sb);
     }
 
-   
+    static void bfs(Vertex v) {
+        Queue<Vertex> q = new ArrayDeque<Vertex>();
+        q.add(v);
+        v.visited = true;
+
+        while (!q.isEmpty()) {
+            Vertex w = q.poll();
+            sb.append(w.id).append(" ");
+
+            for (Vertex x : w.adjacentVertices) {
+                if (!x.visited) {
+                    x.visited = true;
+                    q.add(x);
+                }
+            }
+        }
+    }
+
+    static Vertex[] readGraph() {
+        int nVertices = sc.nextInt();
+        int nEdges = sc.nextInt();
+
+        Vertex[] vertices = new Vertex[nVertices + 1];
+        for (int i = 0; i < nVertices; ++i) {
+            vertices[i] = new Vertex(i);
+        }
+
+        for (int i = 0; i < nEdges; ++i) {
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+
+            vertices[a].addAdjacentVertices(vertices[b]);
+        }
+
+        for (int i = 0; i < nVertices; i++) {
+            vertices[i].adjacentVertices.sort((v1, v2) -> {
+                int compare = Integer.compare(v1.id, v2.id);
+                return compare;
+            });
+        }
+        return vertices;
+    }
+
+    static class Vertex {
+
+        public int id;
+        public boolean visited;
+        public List<Vertex> adjacentVertices = new ArrayList<Vertex>();
+
+        public Vertex(int id) {
+            this.id = id;
+        }
+
+        public void addAdjacentVertices(Vertex vertex) {
+            adjacentVertices.add(vertex);
+        }
+    }
 
     static class InputReader {
 

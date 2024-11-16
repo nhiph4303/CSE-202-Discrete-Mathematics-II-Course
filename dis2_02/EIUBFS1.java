@@ -1,8 +1,7 @@
-
 import java.io.*;
 import java.util.*;
 
-public class EIUDBS2 {
+public class EIUBFS1 {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
@@ -46,7 +45,6 @@ public class EIUDBS2 {
             int b = sc.nextInt();
 
             vertices[a].addAdjacentVertices(vertices[b]);
-            vertices[b].addAdjacentVertices(vertices[a]);
         }
 
         for (int i = 0; i < nVertices; i++) {

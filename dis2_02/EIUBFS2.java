@@ -1,9 +1,8 @@
-package dis2_04;
 
 import java.io.*;
 import java.util.*;
 
-public class EILOCAL2 {
+public class EIUBFS2 {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
@@ -11,78 +10,66 @@ public class EILOCAL2 {
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
-        for (int i = 1; i < graph.length; ++i) {
-            Vertex v = graph[i];
-            System.out.println("Degree of Vertex " + v.id + ": " + v.getDegree());
-        }
-        dfs(graph[1]);
-        bfs(graph[1]);
-    }
-
-    static void dfs(Vertex v) {
-        v.visited = true;
-        for (Edge e : v.adjacentEdges) {
-            if (!e.endpoint.visited) {
-                e.endpoint.distance = v.distance + e.weight;
-                dfs(e.endpoint);
-            }
-        }
+        bfs(graph[0]);
+        System.out.println(sb);
     }
 
     static void bfs(Vertex v) {
-        Queue<Vertex> q = new LinkedList<>();
-        v.visited = true;
-        v.distance = 0;
+        Queue<Vertex> q = new ArrayDeque<Vertex>();
         q.add(v);
+        v.visited = true;
 
         while (!q.isEmpty()) {
-            Vertex current = q.poll();
-            for (Edge e : current.adjacentEdges) {
-                if (!e.endpoint.visited) {
-                    e.endpoint.visited = true;
-                    e.endpoint.distance = current.distance + e.weight;
-                    q.add(e.endpoint);
+            Vertex w = q.poll();
+            sb.append(w.id).append(" ");
+
+            for (Vertex x : w.adjacentVertices) {
+                if (!x.visited) {
+                    x.visited = true;
+                    q.add(x);
                 }
             }
         }
     }
 
     static Vertex[] readGraph() {
-        return new Vertex[0];
+        int nVertices = sc.nextInt();
+        int nEdges = sc.nextInt();
+
+        Vertex[] vertices = new Vertex[nVertices + 1];
+        for (int i = 0; i < nVertices; ++i) {
+            vertices[i] = new Vertex(i);
+        }
+
+        for (int i = 0; i < nEdges; ++i) {
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+
+            vertices[a].addAdjacentVertices(vertices[b]);
+            vertices[b].addAdjacentVertices(vertices[a]);
+        }
+
+        for (int i = 0; i < nVertices; i++) {
+            vertices[i].adjacentVertices.sort((v1, v2) -> {
+                int compare = Integer.compare(v1.id, v2.id);
+                return compare;
+            });
+        }
+        return vertices;
     }
 
     static class Vertex {
+
         public int id;
-        public int distance = 0;
-        public boolean visited = false;
-        public List<Edge> adjacentEdges = new ArrayList<>();
+        public boolean visited;
+        public List<Vertex> adjacentVertices = new ArrayList<Vertex>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjacentVertex(Vertex vertex, int weight) {
-            Edge e = new Edge(vertex, weight);
-            adjacentEdges.add(e);
-        }
-
-        public int getDegree() {
-            return adjacentEdges.size();
-        }
-
-        @Override
-        public String toString() {
-            return "Vertex " + id;
-        }
-    }
-
-    static class Edge {
-        Vertex endpoint;
-        int weight;
-
-        public Edge(Vertex endpoint, int weight) {
-            this.endpoint = endpoint;
-            this.weight = weight;
+        public void addAdjacentVertices(Vertex vertex) {
+            adjacentVertices.add(vertex);
         }
     }
 

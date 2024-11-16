@@ -1,73 +1,60 @@
+package dis2_04;
+
 import java.io.*;
 import java.util.*;
 
-public class EIUDBS1 {
-
+public class EIUEASPOST {
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
-        bfs(graph[0]);
+
+        List<Vertex> list = new ArrayList<>();
+        printPostOrder(graph[1], list);
+        for (Vertex v : list){
+            sb.append(v.id + " ");
+        }
         System.out.println(sb);
     }
 
-    static void bfs(Vertex v) {
-        Queue<Vertex> q = new ArrayDeque<Vertex>();
-        q.add(v);
-        v.visited = true;
-
-        while (!q.isEmpty()) {
-            Vertex w = q.poll();
-            sb.append(w.id).append(" ");
-
-            for (Vertex x : w.adjacentVertices) {
-                if (!x.visited) {
-                    x.visited = true;
-                    q.add(x);
-                }
-            }
+    static void printPostOrder (Vertex v, List<Vertex> list){
+        if (v.left!=null){
+            printPostOrder(v.left, list);
         }
+        if (v.right!=null){
+            printPostOrder(v.right, list);
+        }
+        list.add(v);
     }
 
     static Vertex[] readGraph() {
-        int nVertices = sc.nextInt();
-        int nEdges = sc.nextInt();
+        int n = sc.nextInt();
+        int m = n;
 
-        Vertex[] vertices = new Vertex[nVertices + 1];
-        for (int i = 0; i < nVertices; ++i) {
+        Vertex[] vertices = new Vertex[n + 1];
+        for (int i = 1; i <= n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < nEdges; ++i) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
-
-            vertices[a].addAdjacentVertices(vertices[b]);
+        for (int i = 1; i <= m; i++) {
+            int u = sc.nextInt();
+            vertices[i].left = u > 0 ? vertices[u] : null;
+            int v = sc.nextInt();
+            vertices[i].right = v > 0 ? vertices[v] : null;
         }
 
-        for (int i = 0; i < nVertices; i++) {
-            vertices[i].adjacentVertices.sort((v1, v2) -> {
-                int compare = Integer.compare(v1.id, v2.id);
-                return compare;
-            });
-        }
         return vertices;
     }
 
     static class Vertex {
-
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjacentVertices = new ArrayList<Vertex>();
+        int id;
+        Vertex left;
+        Vertex right;
 
         public Vertex(int id) {
             this.id = id;
-        }
-
-        public void addAdjacentVertices(Vertex vertex) {
-            adjacentVertices.add(vertex);
         }
     }
 
@@ -154,14 +141,16 @@ public class EIUDBS1 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -181,7 +170,8 @@ public class EIUDBS1 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

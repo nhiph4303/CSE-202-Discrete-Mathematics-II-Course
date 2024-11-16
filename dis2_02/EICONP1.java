@@ -19,9 +19,10 @@ public class EICONP1 {
                 int minVertex = Integer.MAX_VALUE;
 
                 for (Vertex vertex : component) {
-                    if (vertex.id < minVertex) {
-                        minVertex = vertex.id;
-                    }
+                    minVertex = Math.min(minVertex,vertex.id);
+                    // if (vertex.id < minVertex) {
+                    //     minVertex = vertex.id;
+                    // }
                 }
 
                 sb.append(minVertex).append(" ").append(component.size()).append("\n");

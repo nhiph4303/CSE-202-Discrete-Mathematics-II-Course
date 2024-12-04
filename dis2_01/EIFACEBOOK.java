@@ -11,73 +11,55 @@ public class EIFACEBOOK {
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-
-        Vertex vertices[] = readGraph(n,m);
-
-        for (int i = 1; i <= n; i++) {
+        Vertex[] graph = readGraph();
+        for (int i = 1; i < graph.length; i++) {
             int count = 0;
-            for (Vertex friend : vertices[i].adjecentVertices) {
-                if (!vertices[i].gender.equals(friend.gender)) {
+            for (Vertex friend : graph[i].adjList) {
+                if (!friend.gender.equalsIgnoreCase(graph[i].gender)) {
                     count++;
                 }
             }
-            sb.append(count).append(" ");
+            sb.append(count + " ");
         }
-
-        System.out.print(sb.toString().trim());
+        System.out.println(sb);
     }
 
-    static Vertex[] readGraph(int n, int m) {
-        Vertex[] vertices = new Vertex[n + 1];
-    
-        for (int i = 1; i <= n; ++i) {
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
+        Vertex[] vertices = new Vertex[n+1];
+
+        for (int i = 1; i <= n; i++) {
             String gender = sc.next();
-            vertices[i] = new Vertex(i, gender); 
+            vertices[i] = new Vertex(gender);
         }
-    
-        for (int i = 0; i < m; ++i) {
+        
+
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
-    
-            vertices[u].addAdjecentVertex(vertices[v]);
-            vertices[v].addAdjecentVertex(vertices[u]);
+
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
-    
         return vertices;
     }
 
-    static class Vertex {
+    public static class Vertex {
 
         public String gender;
-        public int id;
-        public Set<Vertex> adjecentVertices = new HashSet<Vertex>();
+        public List<Vertex> adjList = new ArrayList<>();
 
-        public Vertex(int id, String gender) {
-            this.id = id;
+        public Vertex(String gender) {
             this.gender = gender;
         }
 
-        public void addAdjecentVertex(Vertex vertex) {
-            if (!adjecentVertices.contains(vertex)){
-                adjecentVertices.add(vertex);
+        public void addAdjList(Vertex v) {
+            if (!adjList.contains(v)) {
+                adjList.add(v);
             }
         }
-
-      @Override
-      public boolean equals (Object obj){
-        if (obj instanceof Vertex){
-            return ((Vertex) obj).id == id;
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode(){
-        return id;
-      }
-
     }
 
     static class InputReader {

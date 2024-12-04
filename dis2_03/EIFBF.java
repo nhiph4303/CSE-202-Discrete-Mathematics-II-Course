@@ -10,7 +10,7 @@ public class EIFBF {
     static int male;
     static int female;
     static int maxVertex;
-    static List<Component> components = new ArrayList<>();
+    static List<Component> compList = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
@@ -22,18 +22,18 @@ public class EIFBF {
                 male = 0;
                 female = 0;
                 dfs(graph[i]);
-                components.add(new Component(maxVertex, male, female));
+                compList.add(new Component(maxVertex, male, female));
             }
         }
 
-        Collections.sort(components, (c1, c2) -> c1.maxVertex - c2.maxVertex);
-        for (Component c : components) {
+        Collections.sort(compList, (c1, c2) -> c1.maxVertex - c2.maxVertex);
+        for (Component c : compList) {
             sb.append(c.maxVertex + " " + c.male + " " + c.female + "\n");
         }
         System.out.println(sb);
     }
 
-    static class Component {
+    public static class Component {
         int maxVertex;
         int male;
         int female;
@@ -45,7 +45,7 @@ public class EIFBF {
         }
     }
 
-    static void dfs(Vertex v) {
+    public static void dfs(Vertex v) {
         v.visited = true;
         maxVertex = Math.max(maxVertex, v.id);
         if (v.gender.equalsIgnoreCase("Nam")) {
@@ -53,7 +53,7 @@ public class EIFBF {
         } else {
             female++;
         }
-        for (Vertex vertex : v.adjacentVertices) {
+        for (Vertex vertex : v.adjList) {
             if (!vertex.visited) {
                 vertex.visited = true;
                 dfs(vertex);
@@ -61,7 +61,7 @@ public class EIFBF {
         }
     }
 
-    static Vertex[] readGraph() {
+    public static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
@@ -71,29 +71,29 @@ public class EIFBF {
         }
 
         for (int i = 0; i < m; i++) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
-            vertices[a].addAdjacentVertex(vertices[b]);
-            vertices[b].addAdjacentVertex(vertices[a]);
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
     }
 
-    static class Vertex {
+    public static class Vertex {
 
-        int id;
-        String gender;
-        boolean visited;
-        List<Vertex> adjacentVertices = new ArrayList<>();
+        public int id;
+        public String gender;
+        public boolean visited;
+        public List<Vertex> adjList = new ArrayList<>();
 
-        Vertex(int id, String gender) {
+        public Vertex(int id, String gender) {
             this.id = id;
             this.gender = gender;
         }
 
-        void addAdjacentVertex(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        public void addAdjList(Vertex vertex) {
+            adjList.add(vertex);
         }
     }
 

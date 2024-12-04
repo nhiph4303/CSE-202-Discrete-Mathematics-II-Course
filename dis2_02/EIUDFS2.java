@@ -15,10 +15,10 @@ public class EIUDFS2 {
         System.out.println(sb);
     }
 
-    public static void dfs(Vertex parent) {
-        parent.visited = true;
-        sb.append(parent.id + " ");
-        for (Vertex u : parent.adjList) {
+    public static void dfs(Vertex v) {
+        v.visited = true;
+        sb.append(v.id + " ");
+        for (Vertex u : v.adjList) {
             if (!u.visited) {
                 dfs(u);
             }

@@ -24,7 +24,7 @@ public class EICON {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            if (graph[u].adjVertexList.contains(graph[v])) {
+            if (graph[u].adjList.contains(graph[v])) {
                 sb.append("Y\n");
             } else {
                 sb.append("N\n");
@@ -43,7 +43,7 @@ public class EICON {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[v].addAdjVertex(vertices[u]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
@@ -52,14 +52,14 @@ public class EICON {
     public static class Vertex {
 
         public int id;
-        public List<Vertex> adjVertexList = new ArrayList<>();
+        public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjVertex(Vertex v) {
-            adjVertexList.add(v);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
     }
 

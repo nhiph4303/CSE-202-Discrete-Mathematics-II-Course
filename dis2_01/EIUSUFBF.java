@@ -26,14 +26,14 @@ public class EIUSUFBF {
 
             Collections.sort(waitList);
 
-            sb.append(i).append(" ");
+            sb.append(i + " ");
             for (int x : waitList) {
-                sb.append(x).append(" ");
+                sb.append(x + " ");
             }
             sb.append("\n");
         }
 
-        System.out.println(sb.toString().trim());
+        System.out.println(sb);
     }
 
     public static Vertex[] readGraph(int n, int m) {
@@ -148,14 +148,16 @@ public class EIUSUFBF {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -175,7 +177,8 @@ public class EIUSUFBF {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

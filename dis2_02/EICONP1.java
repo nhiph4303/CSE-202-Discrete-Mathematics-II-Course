@@ -12,6 +12,7 @@ public class EICONP1 {
         Vertex[] graph = readGraph();
         for (Vertex v:graph) {
             List<Vertex> compList = new ArrayList<>();
+            
             if (!v.visited) {
                 dfs(v, compList);
                 

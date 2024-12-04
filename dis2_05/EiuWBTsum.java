@@ -1,91 +1,112 @@
+package dis2_05;
 
 import java.io.*;
 import java.util.*;
 
-public class EICONP3 {
-
-    static InputReader sc;
+class EiuWBTsum {
+    static InputReader reader;
     static StringBuilder sb = new StringBuilder();
+    static Vertex mainNode = new Vertex(Integer.MAX_VALUE);
+    static long totalWeight;
 
     public static void main(String[] args) throws IOException {
-        sc = new InputReader(System.in);
+        reader = new InputReader(System.in);
+        mainNode.leftWeight = Long.MAX_VALUE;
+        mainNode.rightWeight = 0;
         Vertex[] graph = readGraph();
-        for (Vertex v : graph) {
-            List<Vertex> compList = new ArrayList<>();
-            
-            int[] edgeCount = { 0 };
-            if (!v.visited) {
-                dfs(v, compList, edgeCount);
-
-                int minVertex = Integer.MAX_VALUE;
-                for (Vertex u : compList) {
-                    minVertex = Math.min(minVertex, u.id);
-                }
-
-                sb.append(minVertex + " " + compList.size() + " " + edgeCount[0] / 2 +
-
-                        "\n");
-            }
+        DFS(graph[2]);
+        if (mainNode.id == Integer.MAX_VALUE) {
+            sb.append("-1");
+        } else {
+            sb.append(mainNode.id + " " + Math.min(mainNode.leftWeight, mainNode.rightWeight) + " "
+                    + Math.max(mainNode.rightWeight, mainNode.leftWeight));
         }
         System.out.println(sb);
 
     }
 
-    static void dfs(Vertex v, List<Vertex> compList, int[] edgeCount) {
+    static long DFS(Vertex v) {
+        long temp = v.weight;
         v.visited = true;
-        compList.add(v);
-        for (Vertex u : v.adjList) {
-            edgeCount[0]++;
-            if (!u.visited) {
-                dfs(u, compList, edgeCount);
+        if (v.adjacentVertices.size() == 2) {
+            for (Vertex u : v.adjacentVertices) {
+                if (!u.visited) {
+                    DFS(u);
+                    v.leftWeight += u.weight;
+                    v.weight += u.weight;
+                }
+
+                v.rightWeight = totalWeight - v.leftWeight - temp;
+                if (v.getDif() < mainNode.getDif()) {
+                    mainNode = v;
+                } else if (v.getDif() == mainNode.getDif() && v.id < mainNode.id) {
+                    mainNode = v;
+                }
+
+            }
+        } else {
+            for (Vertex u : v.adjacentVertices) {
+                if (!u.visited) {
+                    DFS(u);
+                    v.weight += u.weight;
+                }
             }
         }
 
+        return v.weight;
     }
 
     static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = sc.nextInt();
+        int nVertices = reader.nextInt();
+        int nEdges = nVertices - 1;
 
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
+        Vertex[] vertices = new Vertex[nVertices + 1];
+        for (int i = 1; i <= nVertices; ++i) {
             vertices[i] = new Vertex(i);
+            int weightInput = reader.nextInt();
+            vertices[i].weight = weightInput;
+            totalWeight += vertices[i].weight;
         }
 
-        for (int i = 0; i < m; ++i) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
+        for (int i = 0; i < nEdges; ++i) {
+            int a = reader.nextInt();
+            int b = reader.nextInt();
 
-            vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+            vertices[a].addAdjacentVertices(vertices[b]);
+            vertices[b].addAdjacentVertices(vertices[a]);
         }
-
         return vertices;
     }
 
-    public static class Vertex {
-
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+    static class Vertex {
+        int id;
+        boolean visited;
+        List<Vertex> adjacentVertices;
+        long leftWeight;
+        long rightWeight;
+        long weight;
 
         public Vertex(int id) {
             this.id = id;
+            adjacentVertices = new ArrayList<>();
         }
 
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
+        public void addAdjacentVertices(Vertex v) {
+            adjacentVertices.add(v);
         }
 
+        public long getDif() {
+            return Math.abs(leftWeight - rightWeight);
+        }
     }
 
     static class InputReader {
-
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;
 
         public InputReader(InputStream stream) throws IOException {
+
             inbuf = new byte[2 << 23];
             lenbuf = 0;
             ptrbuf = 0;
@@ -123,7 +144,7 @@ public class EICONP3 {
             int b = skip();
             StringBuilder sb = new StringBuilder();
             while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                // != ' ')
+                                        // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
@@ -131,9 +152,8 @@ public class EICONP3 {
         }
 
         private int readByte() {
-            if (lenbuf == -1) {
+            if (lenbuf == -1)
                 throw new InputMismatchException();
-            }
             if (ptrbuf >= lenbuf) {
                 ptrbuf = 0;
                 try {
@@ -141,9 +161,8 @@ public class EICONP3 {
                 } catch (IOException e) {
                     throw new InputMismatchException();
                 }
-                if (lenbuf <= 0) {
+                if (lenbuf <= 0)
                     return -1;
-                }
             }
             return inbuf[ptrbuf++];
         }

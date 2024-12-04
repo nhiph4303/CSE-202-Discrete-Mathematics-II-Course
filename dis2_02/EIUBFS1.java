@@ -44,7 +44,7 @@ public class EIUBFS1 {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[u].addAdjVertex(vertices[v]);
+            vertices[u].addAdjList(vertices[v]);
         }
 
         for (Vertex v : vertices) {
@@ -63,7 +63,7 @@ public class EIUBFS1 {
             this.id = id;
         }
 
-        public void addAdjVertex(Vertex v) {
+        public void addAdjList(Vertex v) {
             adjList.add(v);
 
         }

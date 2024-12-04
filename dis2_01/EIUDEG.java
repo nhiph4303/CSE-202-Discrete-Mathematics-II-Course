@@ -15,7 +15,7 @@ public class EIUDEG {
 
         for (int i = 1; i < graph.length; ++i) {
             Vertex v = graph[i];
-            sb.append(v.getDegree() + " "); // 2 2 1 1 2
+            sb.append(v.getDegree() + " ");
         }
 
         System.out.println(sb);
@@ -24,15 +24,12 @@ public class EIUDEG {
     static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
-
-        // Tao mang de luu dinh va khoi tao dinh
         Vertex[] vertices = new Vertex[n + 1];
 
         for (int i = 1; i <= n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        // Doc lan luot cac canh
         for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
@@ -41,7 +38,7 @@ public class EIUDEG {
             vertices[v].addAdjList(vertices[u]);
         }
 
-        return vertices; // 0 1 2 3 4 5 
+        return vertices; 
     }
 
     static class Vertex {

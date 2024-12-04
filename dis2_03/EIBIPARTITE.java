@@ -28,7 +28,7 @@ public class EIBIPARTITE {
 
     static boolean isBipartite(Vertex[] graph) {
         for (Vertex v : graph) {
-            for (Vertex u : v.adjacentVertices) {
+            for (Vertex u : v.adjList) {
                 if (v.color == u.color) {
                     return false;
                 }
@@ -45,7 +45,7 @@ public class EIBIPARTITE {
         while (!q.isEmpty()) {
             Vertex w = q.poll();
 
-            for (Vertex x : w.adjacentVertices) {
+            for (Vertex x : w.adjList) {
                 if (!x.visited) {
                     x.visited = true;
                     x.color = 3 - w.color;
@@ -56,28 +56,22 @@ public class EIBIPARTITE {
     }
 
     static Vertex[] readGraph() {
-        int nVertices = sc.nextInt();
-        int nEdges = sc.nextInt();
+        int n = sc.nextInt();
+        int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[nVertices];
-        for (int i = 0; i < nVertices; ++i) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < nEdges; ++i) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
+        for (int i = 0; i < m; ++i) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
 
-            vertices[a].addAdjacentVertices(vertices[b]);
-            vertices[b].addAdjacentVertices(vertices[a]);
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
-        for (int i = 0; i < nVertices; i++) {
-            vertices[i].adjacentVertices.sort((v1, v2) -> {
-                int compare = Integer.compare(v1.id, v2.id);
-                return compare;
-            });
-        }
         return vertices;
     }
 
@@ -85,14 +79,14 @@ public class EIBIPARTITE {
         public int id;
         public boolean visited = false;
         public int color = 1;
-        List<Vertex> adjacentVertices = new ArrayList<>();
+        List<Vertex> adjList = new ArrayList<>();
 
         Vertex(int id) {
             this.id = id;
         }
 
-        void addAdjacentVertices(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        void addAdjList(Vertex vertex) {
+            adjList.add(vertex);
         }
     }
 

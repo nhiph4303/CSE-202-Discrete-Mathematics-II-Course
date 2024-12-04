@@ -33,10 +33,10 @@ public class EITRGROUPdfs {
         System.out.println(sb);
     }
 
-    static void dfs(Vertex v) {
+    public static void dfs(Vertex v) {
         v.visited = true;
 
-        for (Vertex w : v.adjacentVertices) {
+        for (Vertex w : v.adjList) {
             if (!w.visited) {
                 w.level = v.level + 1;
                 dfs(w); 
@@ -44,39 +44,40 @@ public class EITRGROUPdfs {
         }
     }
 
-    static Vertex[] readGraph() {
-        int nVertices = sc.nextInt();
-        int nEdges = sc.nextInt();
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[nVertices];
-        for (int i = 0; i < nVertices; ++i) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < nEdges; ++i) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
+        for (int i = 0; i < m; ++i) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
 
-            vertices[a].addAdjacentVertices(vertices[b]);
-            vertices[b].parent = vertices[a];
+            vertices[u].addAdjList(vertices[v]);
+
+            vertices[v].parent = vertices[u];
         }
 
         return vertices;
     }
 
-    static class Vertex {
-        int id;
-        boolean visited = false;
-        Vertex parent = null;
-        int level = 0;
-        List<Vertex> adjacentVertices = new ArrayList<>();
+    public static class Vertex {
+        public int id;
+        public boolean visited = false;
+        public Vertex parent = null;
+        public int level = 0;
+        public List<Vertex> adjList = new ArrayList<>();
 
-        Vertex(int id) {
+        public Vertex(int id) {
             this.id = id;
         }
 
-        void addAdjacentVertices(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
     }
 

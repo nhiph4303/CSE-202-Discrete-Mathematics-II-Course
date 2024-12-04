@@ -12,18 +12,20 @@ public class EIMKF {
         sc = new InputReader(System.in);
 
         Vertex[] graph = readGraph();
-        for (int i = 0; i<graph.length; i++){
+        for (int i = 0; i < graph.length; i++) {
             Vertex u = graph[i];
-            Collections.sort(u.adjVertexList);
-            sb.append(i).append(" ").append(u.getDegree()).append(" ");
 
-            for (Vertex v : u.adjVertexList){
-                sb.append(v.id).append(" ");
+            Collections.sort(u.adjList);
+
+            sb.append(i + " " + u.getDegree() + " ");
+
+            for (Vertex v : u.adjList) {
+                sb.append(v.id + " ");
             }
 
             sb.append("\n");
         }
-        System.out.println(sb.toString().trim());
+        System.out.println(sb);
     }
 
     public static Vertex[] readGraph() {
@@ -40,8 +42,8 @@ public class EIMKF {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[u].addAdjecentVertex(vertices[v]);
-            vertices[v].addAdjecentVertex(vertices[u]);
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
@@ -50,18 +52,18 @@ public class EIMKF {
     public static class Vertex implements Comparable<Vertex> {
 
         public int id;
-        public List<Vertex> adjVertexList = new ArrayList<>();
+        public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjecentVertex(Vertex v) {
-            adjVertexList.add(v);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
 
-        public int getDegree(){
-            return adjVertexList.size();
+        public int getDegree() {
+            return adjList.size();
         }
 
         @Override
@@ -153,14 +155,16 @@ public class EIMKF {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -180,7 +184,8 @@ public class EIMKF {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

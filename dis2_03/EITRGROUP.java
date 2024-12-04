@@ -36,13 +36,13 @@ public class EITRGROUP {
     static void bfs(Vertex v) {
         Queue<Vertex> q = new ArrayDeque<>();
         q.add(v);
-        v.level = 0;
         v.visited = true;
+        v.level = 0;
 
         while (!q.isEmpty()) {
             Vertex w = q.poll();
 
-            for (Vertex x : w.adjacentVertices) {
+            for (Vertex x : w.adjList) {
                 if (!x.visited) {
                     x.visited = true;
                     x.level = w.level + 1;
@@ -53,20 +53,21 @@ public class EITRGROUP {
     }
 
     static Vertex[] readGraph() {
-        int nVertices = sc.nextInt();
-        int nEdges = sc.nextInt();
+        int n = sc.nextInt();
+        int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[nVertices];
-        for (int i = 0; i < nVertices; ++i) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < nEdges; ++i) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
+        for (int i = 0; i < m; ++i) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
 
-            vertices[a].addAdjacentVertices(vertices[b]);
-            vertices[b].parent = vertices[a];
+            vertices[u].addAdjList(vertices[v]);
+
+            vertices[v].parent = vertices[u];
         }
 
         return vertices;
@@ -77,14 +78,14 @@ public class EITRGROUP {
         boolean visited = false;
         Vertex parent = null;
         int level = 0;
-        List<Vertex> adjacentVertices = new ArrayList<>();
+        List<Vertex> adjList = new ArrayList<>();
 
         Vertex(int id) {
             this.id = id;
         }
 
-        void addAdjacentVertices(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        void addAdjList(Vertex v) {
+            adjList.add(v);
         }
     }
 

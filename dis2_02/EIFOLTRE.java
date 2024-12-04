@@ -20,19 +20,19 @@ public class EIFOLTRE {
         for (int i = 0; i < nDashes; ++i) {
             sb.append("-");
         }
-        sb.append(v.id).append("\n");
-        for (int i = 0; i < v.adjecentVertices.size(); i++) {
-            if (v.adjecentVertices.get(i).visited == false) {
-                dfs(v.adjecentVertices.get(i), nDashes + 3);
+        sb.append(v.id + "\n");
+        for (int i = 0; i < v.adjList.size(); i++) {
+            if (v.adjList.get(i).visited == false) {
+                dfs(v.adjList.get(i), nDashes + 3);
             }
         }
     }
 
     static HashMap<String, Vertex> readGraph() {
-        int nVertices = sc.nextInt();
+        int n = sc.nextInt();
         HashMap<String, Vertex> vertices = new HashMap<>();
 
-        for (int i = 1; i < nVertices; ++i) {
+        for (int i = 1; i < n; ++i) {
             String u = sc.next();
             String v = sc.next();
 
@@ -48,12 +48,12 @@ public class EIFOLTRE {
                 vertices.put(v, vertexV);
             }
 
-            vertexU.addAdjacentVertices(vertexV);
-            vertexV.addAdjacentVertices(vertexU);
+            vertexU.addAdjList(vertexV);
+            vertexV.addAdjList(vertexU);
         }
 
         for (Vertex v : vertices.values()) {
-            Collections.sort(v.adjecentVertices, (v1, v2) -> v1.id.compareToIgnoreCase(v2.id));
+            Collections.sort(v.adjList, (v1, v2) -> v1.id.compareToIgnoreCase(v2.id));
         }
 
         return vertices;
@@ -63,14 +63,14 @@ public class EIFOLTRE {
 
         String id;
         boolean visited;
-        List<Vertex> adjecentVertices = new ArrayList<>();
+        List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(String id) {
             this.id = id;
         }
 
-        public void addAdjacentVertices(Vertex v) {
-            adjecentVertices.add(v);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
     }
 
@@ -157,14 +157,16 @@ public class EIFOLTRE {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -184,7 +186,8 @@ public class EIFOLTRE {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

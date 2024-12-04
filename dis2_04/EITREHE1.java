@@ -29,7 +29,7 @@ public class EITREHE1 {
     static void dfs(Vertex v) {
         v.visited = true;
 
-        for (Vertex w : v.adjacentVertices) {
+        for (Vertex w : v.adjList) {
             if (!w.visited) {
                 w.level = v.level + 1;
                 dfs(w); 
@@ -38,18 +38,19 @@ public class EITREHE1 {
     }
 
     static Vertex[] readGraph() {
-        int nVertices = sc.nextInt();
-        Vertex[] vertices = new Vertex[nVertices];
-        for (int i = 0; i < nVertices; ++i) {
+        int n = sc.nextInt();
+        
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < nVertices - 1; ++i) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
+        for (int i = 0; i < n - 1; ++i) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
 
-            vertices[a].addAdjacentVertices(vertices[b]);
-            vertices[b].addAdjacentVertices(vertices[a]);
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
@@ -59,14 +60,14 @@ public class EITREHE1 {
         int id;
         boolean visited = false;
         int level = 0;
-        List<Vertex> adjacentVertices = new ArrayList<>();
+        List<Vertex> adjList = new ArrayList<>();
 
         Vertex(int id) {
             this.id = id;
         }
 
-        void addAdjacentVertices(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        void addAdjList(Vertex v) {
+            adjList.add(v);
         }
     }
 

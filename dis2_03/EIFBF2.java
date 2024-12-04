@@ -10,21 +10,23 @@ public class EIFBF2 {
 
     static int male;
     static int female;
-    static List<Vertex> comp;
+    static List<Vertex> compList;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-       
+
         Vertex[] graph = readGraph();
 
         for (int i = 1; i < graph.length; i++) {
 
             if (!graph[i].visited) {
-                comp = new ArrayList<>();
+                compList = new ArrayList<>();
                 male = 0;
                 female = 0;
+
                 dfs(graph[i]);
-                for (Vertex v : comp) {
+
+                for (Vertex v : compList) {
                     v.totalMales = male;
                     v.totalFemales = female;
                 }
@@ -34,12 +36,13 @@ public class EIFBF2 {
         for (int i = 1; i < graph.length; i++) {
             sb.append(i + " " + graph[i].totalMales + " " + graph[i].totalFemales).append("\n");
         }
+        
         System.out.print(sb);
     }
 
-    static void dfs(Vertex v) {
+    public static void dfs(Vertex v) {
         v.visited = true;
-        comp.add(v);
+        compList.add(v);
 
         if (v.gender.equalsIgnoreCase("Nam")) {
             male++;
@@ -47,14 +50,14 @@ public class EIFBF2 {
             female++;
         }
 
-        for (Vertex vertex : v.adjacentVertices) {
+        for (Vertex vertex : v.adjList) {
             if (!vertex.visited) {
                 dfs(vertex);
             }
         }
     }
 
-    static Vertex[] readGraph() {
+    public static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
@@ -63,31 +66,32 @@ public class EIFBF2 {
             vertices[i] = new Vertex(i, sc.next());
         }
 
-
         for (int i = 0; i < m; i++) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
-            vertices[a].addAdjacentVertex(vertices[b]);
-            vertices[b].addAdjacentVertex(vertices[a]);
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
     }
 
-    static class Vertex {
+    public static class Vertex {
         public int id;
         public String gender;
         public boolean visited;
-        public List<Vertex> adjacentVertices = new ArrayList<>();
-        int totalMales, totalFemales;
+        public int totalMales, totalFemales;
+
+        public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id, String gender) {
             this.id = id;
             this.gender = gender;
         }
 
-        void addAdjacentVertex(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        public void addAdjList(Vertex vertex) {
+            adjList.add(vertex);
         }
     }
 
@@ -174,14 +178,16 @@ public class EIFBF2 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -201,7 +207,8 @@ public class EIFBF2 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

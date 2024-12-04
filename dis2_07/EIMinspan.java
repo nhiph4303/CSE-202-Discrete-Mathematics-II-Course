@@ -1,91 +1,103 @@
+package dis2_07;
 
 import java.io.*;
 import java.util.*;
 
-public class EICONP3 {
+public class EIMinspan {
 
-    static InputReader sc;
+    static InputReader reader;
     static StringBuilder sb = new StringBuilder();
+    static int countVertices;
+    static int totalDis = 0;
 
     public static void main(String[] args) throws IOException {
-        sc = new InputReader(System.in);
+        reader = new InputReader(System.in);
         Vertex[] graph = readGraph();
-        for (Vertex v : graph) {
-            List<Vertex> compList = new ArrayList<>();
-            
-            int[] edgeCount = { 0 };
-            if (!v.visited) {
-                dfs(v, compList, edgeCount);
+        PriorityQueue<Edge> pq = new PriorityQueue<>((e1,e2)->{
+            return Integer.compare(e1.weight, e2.weight);
+        });
+        Edge startEdge = new Edge(0, graph[0]);
+        pq.add(startEdge);
 
-                int minVertex = Integer.MAX_VALUE;
-                for (Vertex u : compList) {
-                    minVertex = Math.min(minVertex, u.id);
+        while(!pq.isEmpty()){
+            Edge polledE = pq.poll();
+            if (polledE.endpoint.visited) {
+                continue;
+            }
+            polledE.endpoint.visited = true;
+            totalDis += polledE.weight;
+            countVertices--;
+
+            for(Edge u: polledE.endpoint.adjacentEdges){
+                if(u.endpoint.visited == false){
+                    pq.add(u);
                 }
-
-                sb.append(minVertex + " " + compList.size() + " " + edgeCount[0] / 2 +
-
-                        "\n");
             }
         }
-        System.out.println(sb);
-
-    }
-
-    static void dfs(Vertex v, List<Vertex> compList, int[] edgeCount) {
-        v.visited = true;
-        compList.add(v);
-        for (Vertex u : v.adjList) {
-            edgeCount[0]++;
-            if (!u.visited) {
-                dfs(u, compList, edgeCount);
-            }
+        if(countVertices==0){
+            System.out.println(totalDis);
         }
-
+        else{
+            System.out.println("-1");
+        }
     }
 
-    static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
+    static Vertex[] readGraph(){
+        int nVertices = reader.nextInt();
+        countVertices = nVertices;
+        int nEdges = reader.nextInt();
+
+        Vertex[] vertices = new Vertex[nVertices];
+
+        for (int i = 0; i < vertices.length; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; ++i) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-
-            vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+        for (int i = 0; i < nEdges; i++) {
+            int a = reader.nextInt();
+            int b = reader.nextInt();
+            int w = reader.nextInt();
+            
+            vertices[a].addAdjacentEdges(w, vertices[b]);
+            vertices[b].addAdjacentEdges(w, vertices[a]);;
         }
 
         return vertices;
     }
 
-    public static class Vertex {
+    static class Edge{
+        int weight;
+        Vertex endpoint;
 
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        public Edge(int weight, Vertex endpoint) {
+            this.weight = weight;
+            this.endpoint = endpoint;
+        }    
+    }
+
+    static class Vertex{
+        int id;
+        boolean visited;
+        List<Edge> adjacentEdges = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
+        public void addAdjacentEdges(int weight, Vertex endpoint){
+            Edge e = new Edge(weight, endpoint);
+            adjacentEdges.add(e);
         }
-
     }
 
     static class InputReader {
-
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;
 
         public InputReader(InputStream stream) throws IOException {
+
             inbuf = new byte[2 << 23];
             lenbuf = 0;
             ptrbuf = 0;
@@ -123,7 +135,7 @@ public class EICONP3 {
             int b = skip();
             StringBuilder sb = new StringBuilder();
             while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                // != ' ')
+                                        // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
@@ -131,9 +143,8 @@ public class EICONP3 {
         }
 
         private int readByte() {
-            if (lenbuf == -1) {
+            if (lenbuf == -1)
                 throw new InputMismatchException();
-            }
             if (ptrbuf >= lenbuf) {
                 ptrbuf = 0;
                 try {
@@ -141,9 +152,8 @@ public class EICONP3 {
                 } catch (IOException e) {
                     throw new InputMismatchException();
                 }
-                if (lenbuf <= 0) {
+                if (lenbuf <= 0)
                     return -1;
-                }
             }
             return inbuf[ptrbuf++];
         }

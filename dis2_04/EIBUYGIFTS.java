@@ -1,8 +1,9 @@
+package dis2_04;
 
 import java.io.*;
 import java.util.*;
 
-public class EICONP3 {
+public class EIBUYGIFTS {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
@@ -11,81 +12,62 @@ public class EICONP3 {
         sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
         for (Vertex v : graph) {
-            List<Vertex> compList = new ArrayList<>();
-            
-            int[] edgeCount = { 0 };
-            if (!v.visited) {
-                dfs(v, compList, edgeCount);
-
-                int minVertex = Integer.MAX_VALUE;
-                for (Vertex u : compList) {
-                    minVertex = Math.min(minVertex, u.id);
-                }
-
-                sb.append(minVertex + " " + compList.size() + " " + edgeCount[0] / 2 +
-
-                        "\n");
-            }
+            sb.append(v.friendsNear + "\n");
         }
         System.out.println(sb);
-
-    }
-
-    static void dfs(Vertex v, List<Vertex> compList, int[] edgeCount) {
-        v.visited = true;
-        compList.add(v);
-        for (Vertex u : v.adjList) {
-            edgeCount[0]++;
-            if (!u.visited) {
-                dfs(u, compList, edgeCount);
-            }
-        }
-
     }
 
     static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
+        int currentDate = sc.nextInt();
+        int kDays = sc.nextInt();
+
         Vertex[] vertices = new Vertex[n];
         for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
+            int birthdayInput = sc.nextInt();
+            vertices[i].birthday = birthdayInput;
         }
 
         for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+            if (currentDate <= vertices[u].birthday) {
+                if (vertices[u].birthday - currentDate <= kDays) {
+                    vertices[v].friendsNear++;
+                }
+            }
+            if (currentDate <= vertices[v].birthday) {
+                if (vertices[v].birthday - currentDate <= kDays) {
+                    vertices[u].friendsNear++;
+                }
+            }
         }
 
         return vertices;
     }
 
-    public static class Vertex {
-
+    static class Vertex {
         public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        public int friendsNear;
+        public int birthday;
+        public List<Vertex> adjList = new ArrayList<Vertex>();
 
         public Vertex(int id) {
             this.id = id;
         }
-
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
-        }
-
     }
 
     static class InputReader {
-
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;
 
         public InputReader(InputStream stream) throws IOException {
+
             inbuf = new byte[2 << 23];
             lenbuf = 0;
             ptrbuf = 0;
@@ -123,7 +105,7 @@ public class EICONP3 {
             int b = skip();
             StringBuilder sb = new StringBuilder();
             while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                // != ' ')
+                                        // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
@@ -131,9 +113,8 @@ public class EICONP3 {
         }
 
         private int readByte() {
-            if (lenbuf == -1) {
+            if (lenbuf == -1)
                 throw new InputMismatchException();
-            }
             if (ptrbuf >= lenbuf) {
                 ptrbuf = 0;
                 try {
@@ -141,9 +122,8 @@ public class EICONP3 {
                 } catch (IOException e) {
                     throw new InputMismatchException();
                 }
-                if (lenbuf <= 0) {
+                if (lenbuf <= 0)
                     return -1;
-                }
             }
             return inbuf[ptrbuf++];
         }

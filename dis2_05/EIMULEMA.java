@@ -12,11 +12,11 @@ public class EIMULEMA {
         sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
 
-        for (int i = 0; i< graph.length; i++){
-            if (!graph[i].visited) { 
+        for (int i = 0; i < graph.length; i++) {
+            if (!graph[i].visited) {
                 dfs(graph[i]);
             }
-            sb.append(i + " "+ (int)graph[i].commision +"\n");
+            sb.append(i + " " + (int) graph[i].commision + "\n");
         }
         System.out.println(sb);
 
@@ -28,8 +28,8 @@ public class EIMULEMA {
 
         for (Vertex w : v.adjList) {
             if (!w.visited) {
-                dfs(w); 
-                v.commision += Math.floor(w.commision/2);
+                dfs(w);
+                v.commision += Math.floor(w.commision / 2);
             }
         }
     }
@@ -43,12 +43,11 @@ public class EIMULEMA {
             vertices[i] = new Vertex(i, sale);
         }
 
-        for (int i = 0; i < n-1; ++i) {
+        for (int i = 0; i < n - 1; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
-            // vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
@@ -155,14 +154,16 @@ public class EIMULEMA {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -182,7 +183,8 @@ public class EIMULEMA {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

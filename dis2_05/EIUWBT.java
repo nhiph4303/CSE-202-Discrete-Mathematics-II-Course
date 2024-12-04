@@ -5,68 +5,105 @@ import java.util.*;
 
 public class EIUWBT {
 
-    static InputReader sc;
+    static InputReader reader;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
-        sc = new InputReader(System.in);
-        
-
+        reader = new InputReader(System.in);
+        Vertex[] graph = readGraph();
+        long minDif = Long.MAX_VALUE;
+        long leftWeight = -1;
+        long rightWeight = -1;
+        Vertex minNode = null;
+        for (int i = 1; i < graph.length; i++) {
+            Vertex v = graph[i];
+            if (v.adjacentVertices.size() == 2) {
+                v.visited = true;
+                Vertex leftV = v.adjacentVertices.get(0);
+                dfs(leftV);
+                Vertex rightV = v.adjacentVertices.get(1);
+                dfs(rightV);
+                v.dif = Math.abs(leftV.weight - rightV.weight);
+                if (v.dif < minDif) {
+                    minDif = v.dif;
+                    leftWeight = leftV.weight;
+                    rightWeight = rightV.weight;
+                    minNode = v;
+                }
+                for (int j = 1; j < graph.length; j++) {
+                    graph[j].visited = false;
+                    graph[j].weight = graph[j].originalWeight;
+                }
+            }
+        }
+        if (minDif == Long.MAX_VALUE) {
+            System.out.println("-1");
+        } else {
+            System.out.println(
+                    minNode.id + " " + Math.min(leftWeight, rightWeight) + " " + Math.max(leftWeight, rightWeight));
+        }
     }
 
-    public static void dfs(Vertex v) {
+    static void dfs(Vertex v) {
         v.visited = true;
 
-        for (Vertex w : v.adjList) {
-            if (!w.visited) {
-                w.level = v.level + 1;
-                dfs(w); 
+        for (Vertex u : v.adjacentVertices) {
+            if (u.visited == false) {
+                dfs(u);
+                v.weight += u.weight;
             }
         }
     }
 
-    public static Vertex[] readGraph() {
-        int n = sc.nextInt();
+    static Vertex[] readGraph() {
+        int nVertices = reader.nextInt();
+        int nEdges = nVertices - 1;
 
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
-            double sale = sc.nextDouble();
+        Vertex[] vertices = new Vertex[nVertices + 1];
+        for (int i = 1; i <= nVertices; ++i) {
             vertices[i] = new Vertex(i);
+            int weightInput = reader.nextInt();
+            vertices[i].originalWeight = weightInput;
+            vertices[i].weight = vertices[i].originalWeight;
         }
 
-        for (int i = 0; i < n-1; ++i) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
+        for (int i = 0; i < nEdges; ++i) {
+            int a = reader.nextInt();
+            int b = reader.nextInt();
 
-            vertices[u].addAdjList(vertices[v]);
-            // vertices[v].addAdjList(vertices[u]);
+            vertices[a].addAdjacentVertices(vertices[b]);
+            vertices[b].addAdjacentVertices(vertices[a]);
         }
-
         return vertices;
     }
 
-    public static class Vertex {
+    static class Vertex {
         public int id;
         public boolean visited;
-        public int level = 0;
-        public List<Vertex> adjList = new ArrayList<>();
+        public List<Vertex> adjacentVertices = new ArrayList<Vertex>();
+        long weight;
+        long originalWeight;
+        long leftWeight;
+        long rightWeight;
+        long dif = -1;
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
+        public void addAdjacentVertices(Vertex vertex) {
+            adjacentVertices.add(vertex);
         }
+
     }
 
     static class InputReader {
-
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;
 
         public InputReader(InputStream stream) throws IOException {
+
             inbuf = new byte[2 << 23];
             lenbuf = 0;
             ptrbuf = 0;
@@ -104,7 +141,7 @@ public class EIUWBT {
             int b = skip();
             StringBuilder sb = new StringBuilder();
             while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                // != ' ')
+                                        // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
@@ -112,9 +149,8 @@ public class EIUWBT {
         }
 
         private int readByte() {
-            if (lenbuf == -1) {
+            if (lenbuf == -1)
                 throw new InputMismatchException();
-            }
             if (ptrbuf >= lenbuf) {
                 ptrbuf = 0;
                 try {
@@ -122,9 +158,8 @@ public class EIUWBT {
                 } catch (IOException e) {
                     throw new InputMismatchException();
                 }
-                if (lenbuf <= 0) {
+                if (lenbuf <= 0)
                     return -1;
-                }
             }
             return inbuf[ptrbuf++];
         }
@@ -143,14 +178,16 @@ public class EIUWBT {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -170,7 +207,8 @@ public class EIUWBT {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -187,32 +225,3 @@ public class EIUWBT {
         }
     }
 }
-
-// Cây cân bằng yếu
-// Cách 1: Bruteforce
-
-// Khai báo biến.....(chênh lệch min)
-
-// Thử từng đỉnh 1 -> n
-// 	Nếu đỉnh đó có khác 2 nhánh thì bỏ qua
-// 	Nếu đỉnh có đúng 2 nhánh:
-// 	- Tính chênh lệch giữa 2 nhánh
-// 		-> Tính tổng trọng số từng nhánh
-// 			-> Đánh số đỉnh i là visited
-// 			-> lấy đỉnh kề tại 0 và dfs
-// 			-> lấy đỉnh kề tại 1 và dfs
-// 	- So sánh chệnh lệch với chênh lệch minDiff
-
-// int bfs(Vertex){
-// 	int total
-// }
-
-// Cách 2:
-// Bước 1: tính tổng trọng số các đỉnh of đồ thị
-// Bước 2:
-//     dfs từ 1 đỉnh bất kì
-// Bước 3:
-//     nếu đỉnh đang được duyệt có 2 con 
-//     thì dfs 1 nhánh để tìm được tổng trọng số 1 nhánh T1,
-//     sau đó tính trọng số nhánh còn lại bằng cách lấy T - T1 - trọng số của đỉnh đang duyệt.
-

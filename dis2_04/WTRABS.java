@@ -6,26 +6,31 @@ import java.util.*;
 public class WTRABS {
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    
+
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
+
         Vertex[] graph = readGraph();
         dfs(graph[0]);
-        for(Vertex v: graph){ 
-            if(v.water != 0){
+
+        for (Vertex v : graph) {
+
+            if (v.water != 0) {
                 sb.append(v.id + " " + v.water + "\n");
             }
         }
         System.out.println(sb);
     }
 
-    public static void dfs(Vertex v){
+    public static void dfs(Vertex v) {
         v.visited = true;
-            
-        if(v.adjList.size() >0){
-            double transferedWater = v.water/v.adjList.size();
-            for(Vertex w: v.adjList){
-                if(w.visited == false){
+
+        if (v.adjList.size() > 0) {
+            double transferedWater = v.water / v.adjList.size();
+
+            for (Vertex w : v.adjList) {
+
+                if (w.visited == false) {
                     w.water += transferedWater;
                     dfs(w);
                 }
@@ -34,21 +39,22 @@ public class WTRABS {
         }
     }
 
-    public static Vertex[] readGraph(){
-        int nVertices = sc.nextInt();
-        int nEdges = nVertices -1;
-            
-        Vertex[] vertices = new Vertex[nVertices];
-        for(int i = 0; i<nVertices; ++i){
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = n - 1;
+
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
             double waterAmount = sc.nextDouble();
             vertices[i].water = waterAmount;
         }
-        for(int i = 0 ; i<nEdges; ++i){
-            int a = sc.nextInt();
-            int b = sc.nextInt();
 
-            vertices[b].addAdjList(vertices[a]);
+        for (int i = 0; i < m; ++i) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+
+            vertices[v].addAdjList(vertices[u]);
         }
         return vertices;
     }
@@ -60,9 +66,10 @@ public class WTRABS {
         public double water;
 
         public Vertex(int id) {
-                this.id = id;    }
+            this.id = id;
+        }
 
-        public void addAdjList(Vertex vertex){
+        public void addAdjList(Vertex vertex) {
             adjList.add(vertex);
         }
     }

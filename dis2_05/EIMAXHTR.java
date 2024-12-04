@@ -10,6 +10,7 @@ public class EIMAXHTR {
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
+        
         Vertex[] graph = readGraph();
 
         int minVertex = -1;

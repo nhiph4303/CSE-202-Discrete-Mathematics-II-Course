@@ -1,3 +1,4 @@
+package dis2_01;
 
 import java.io.*;
 import java.util.*;
@@ -20,37 +21,24 @@ public class EIUDEG {
         System.out.println(sb);
     }
 
-    // 5 4
-
-    // 1 2
-    // 2 3
-    // 4 5
-    // 5 1
-
-    // 1 -> 2 5
-    // 2 -> 1 3
-    // 3 -> 2
-    // 4 -> 5
-    // 5 -> 1 4 
-
     static Vertex[] readGraph() {
-        int nVertices = sc.nextInt();
-        int nEdges = sc.nextInt();
+        int n = sc.nextInt();
+        int m = sc.nextInt();
 
         // Tao mang de luu dinh va khoi tao dinh
-        Vertex[] vertices = new Vertex[nVertices + 1];
+        Vertex[] vertices = new Vertex[n + 1];
 
-        for (int i = 1; i <= nVertices; ++i) {
+        for (int i = 1; i <= n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
         // Doc lan luot cac canh
-        for (int i = 0; i < nEdges; ++i) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[u].addAdjacentVertex(vertices[v]);
-            vertices[v].addAdjacentVertex(vertices[u]);
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices; // 0 1 2 3 4 5 
@@ -59,18 +47,18 @@ public class EIUDEG {
     static class Vertex {
 
         public int id;
-        public List<Vertex> adjacentVertices = new ArrayList<Vertex>();
+        public List<Vertex> adjList = new ArrayList<Vertex>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjacentVertex(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
 
         public int getDegree() {
-            return adjacentVertices.size();
+            return adjList.size();
         }
 
     }

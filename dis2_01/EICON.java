@@ -1,41 +1,66 @@
-// input u and v, output v -> u 
-import java.io.*; 
+package dis2_01;
+
+import java.io.*;
 import java.util.*;
+
 public class EICON {
+
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-        int n = sc.nextInt(); //vertice
-        int m = sc.nextInt(); //edge
-        int q = sc.nextInt(); // query
 
-        HashMap<Integer, ArrayList<Integer>> graph = new HashMap<>();
-        //input
-        for (int i = 0; i < m; i++) {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int q = sc.nextInt();
+
+        Vertex[] graph = readGraph(n, m);
+        result(q, graph);
+    }
+
+    public static void result(int q, Vertex[] graph) {
+        for (int i = 0; i < q; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            if (!graph.containsKey(v)) {
-                graph.put(v, new ArrayList<>());
-            }
-
-            graph.get(v).add(u);
-        }
-        //query
-        for (int i = 0; i < q; i++) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
-
-            if (graph.containsKey(a) && graph.get(a).contains(b)) {
+            if (graph[u].adjVertexList.contains(graph[v])) {
                 sb.append("Y\n");
             } else {
                 sb.append("N\n");
             }
         }
-        System.out.println(sb.toString().trim());
+        System.out.println(sb);
+    }
 
+    public static Vertex[] readGraph(int n, int m) {
+        Vertex[] vertices = new Vertex[n + 1];
+        for (int i = 1; i <= n; ++i) {
+            vertices[i] = new Vertex(i);
+        }
+
+        for (int i = 0; i < m; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+
+            vertices[v].addAdjVertex(vertices[u]);
+        }
+
+        return vertices;
+    }
+
+    public static class Vertex {
+
+        public int id;
+        public List<Vertex> adjVertexList = new ArrayList<>();
+
+        public Vertex(int id) {
+            this.id = id;
+        }
+
+        public void addAdjVertex(Vertex v) {
+            adjVertexList.add(v);
+        }
     }
 
     static class InputReader {
@@ -121,14 +146,16 @@ public class EICON {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -148,7 +175,8 @@ public class EICON {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

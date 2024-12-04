@@ -1,3 +1,5 @@
+package dis2_01;
+
 import java.io.*;
 import java.util.*;
 
@@ -9,35 +11,34 @@ public class EIMKF {
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-        Vertex[] graph = readGraph(n,m);
+        Vertex[] graph = readGraph();
+        for (int i = 0; i<graph.length; i++){
+            Vertex u = graph[i];
+            Collections.sort(u.adjVertexList);
+            sb.append(i).append(" ").append(u.getDegree()).append(" ");
 
-        for (int i = 0; i < n; i++) {
-            Vertex vertex = graph[i];
-            Collections.sort(vertex.adjecentVertices); 
-
-            sb.append(vertex.id).append(" ").append(vertex.getDegree()).append(" "); 
-
-            for (Vertex v : vertex.adjecentVertices) {
-                sb.append(v.id).append(" "); 
+            for (Vertex v : u.adjVertexList){
+                sb.append(v.id).append(" ");
             }
 
-            sb.append("\n"); 
+            sb.append("\n");
         }
-
-        System.out.print(sb.toString());
+        System.out.println(sb.toString().trim());
     }
 
-    static Vertex[] readGraph(int n, int m) {
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
-            vertices[i] = new Vertex(i); 
+
+        for (int i = 0; i < n; i++) {
+            vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; ++i) {
-           int u = sc.nextInt();
-           int v = sc.nextInt();
+        for (int i = 0; i < m; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
 
             vertices[u].addAdjecentVertex(vertices[v]);
             vertices[v].addAdjecentVertex(vertices[u]);
@@ -46,30 +47,26 @@ public class EIMKF {
         return vertices;
     }
 
-    static class Vertex implements Comparable<Vertex> {
+    public static class Vertex implements Comparable<Vertex> {
+
         public int id;
-        public List<Vertex> adjecentVertices = new ArrayList<>();
+        public List<Vertex> adjVertexList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjecentVertex(Vertex vertex) {
-            adjecentVertices.add(vertex);
+        public void addAdjecentVertex(Vertex v) {
+            adjVertexList.add(v);
         }
 
-        public int getDegree() {
-            return adjecentVertices.size();
-        }
-
-        @Override
-        public int compareTo(Vertex other) {
-            return Integer.compare(this.id, other.id); 
+        public int getDegree(){
+            return adjVertexList.size();
         }
 
         @Override
-        public String toString() {
-            return id + " ";
+        public int compareTo(Vertex v) {
+            return this.id - v.id;
         }
     }
 

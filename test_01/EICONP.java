@@ -7,6 +7,7 @@ public class EICONP {
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) {
+        
         Vertex[] graph = readGraph();
         int nComp = 0;
         for (Vertex v:graph){

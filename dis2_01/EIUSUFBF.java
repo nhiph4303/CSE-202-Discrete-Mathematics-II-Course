@@ -1,3 +1,5 @@
+package dis2_01;
+
 import java.io.*;
 import java.util.*;
 
@@ -12,53 +14,54 @@ public class EIUSUFBF {
         int m = sc.nextInt();
         int l = sc.nextInt();
 
-        Vertex[] vertices = readGraph(n, m);
+        Vertex[] graph = readGraph(n, m);
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < graph.length; i++) {
             List<Integer> waitList = new ArrayList<>();
-            for (Vertex friend : vertices[i].adjencentVertices) {
-                if (friend.adjencentVertices.size() < l) {
-                    waitList.add(friend.id);
+            for (Vertex x : graph[i].adjList) {
+                if (x.adjList.size() < l) {
+                    waitList.add(x.id);
                 }
             }
-            Collections.sort(waitList);
-            sb.append(i).append(" ");
 
-            for (int suggestion : waitList) {
-                sb.append(suggestion).append(" ");
+            Collections.sort(waitList);
+
+            sb.append(i).append(" ");
+            for (int x : waitList) {
+                sb.append(x).append(" ");
             }
             sb.append("\n");
         }
-        System.out.print(sb.toString().trim());
+
+        System.out.println(sb.toString().trim());
     }
 
-    static Vertex[] readGraph(int n, int m) {
+    public static Vertex[] readGraph(int n, int m) {
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; ++i) {
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
-            vertices[u].addAdjecentVertex(vertices[v]);
-            vertices[v].addAdjecentVertex(vertices[u]);
+
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
         return vertices;
     }
 
-    static class Vertex {
+    public static class Vertex {
         public int id;
-        public Set<Vertex> adjencentVertices = new HashSet<>();
-        
+        public List<Vertex> adjList = new ArrayList<>();
+
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjecentVertex(Vertex vertex) {
-            if (!adjencentVertices.contains(vertex)) {
-                adjencentVertices.add(vertex);
-            }
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
     }
 

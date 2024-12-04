@@ -1,4 +1,4 @@
-// input u and v, output v -> u 
+package dis2_01;
 
 import java.io.*;
 import java.util.*;
@@ -10,51 +10,70 @@ public class EIHCON {
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-        int n = sc.nextInt(); //vertice
-        int m = sc.nextInt(); //edge
-        int q = sc.nextInt(); // query
 
-        HashMap<Integer, ArrayList<Integer>> graph = new HashMap<>();
-        //input
-        for (int i = 0; i < m; i++) {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int q = sc.nextInt();
+
+        Vertex[] graph = readGraph(n, m);
+        getResult(q, graph);
+    }
+
+    public static void getResult(int q, Vertex[] graph) {
+        for (int i = 0; i < q; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            if (!graph.containsKey(v)) {
-                graph.put(v, new ArrayList<>());
-            }
+            Vertex vertexU = graph[u];
+            Vertex vertexV = graph[v];
 
-            graph.get(v).add(u);
-        }
-
-        for (int i = 0; i < q; i++) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
-
-            boolean found = false;
-
-            if (graph.containsKey(a) && graph.get(a).contains(b)) {
+            if (vertexU.adjVertexList.contains(vertexV)) {
                 sb.append("Y\n");
             } else {
-                if (graph.containsKey(a)) {
-                    for (int c : graph.get(a)) { //c = đỉnh trung gian - là đỉnh kề của a
-                        if (graph.containsKey(c) && graph.get(c).contains(b)) {
-                            found = true;
-                            break;
-                        }
+                boolean flag = false;
+                for (Vertex vertexY : vertexU.adjVertexList) {
+                    if (vertexY.adjVertexList.contains(vertexV)) {
+                        sb.append("Y\n");
+                        flag = true;
+                        break;
                     }
                 }
-
-                if (found) {
-                    sb.append("Y\n");
-                } else {
+                if (!flag) {
                     sb.append("N\n");
                 }
             }
         }
+        System.out.println(sb);
+    }
 
-        System.out.println(sb.toString().trim());
+    public static Vertex[] readGraph(int n, int m) {
+        Vertex[] vertices = new Vertex[n + 1];
+        for (int i = 1; i <= n; ++i) {
+            vertices[i] = new Vertex(i);
+        }
 
+        for (int i = 0; i < m; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+
+            vertices[v].addAdjVertex(vertices[u]);
+        }
+
+        return vertices;
+    }
+
+    public static class Vertex {
+
+        public int id;
+        public List<Vertex> adjVertexList = new ArrayList<>();
+
+        public Vertex(int id) {
+            this.id = id;
+        }
+
+        public void addAdjVertex(Vertex v) {
+            adjVertexList.add(v);
+        }
     }
 
     static class InputReader {
@@ -140,14 +159,16 @@ public class EIHCON {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -167,7 +188,8 @@ public class EIHCON {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

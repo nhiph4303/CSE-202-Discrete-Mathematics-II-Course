@@ -7,82 +7,68 @@ public class EILOCAL2 {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-
+    static long max;
+   
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-        Vertex[] graph = readGraph();
-        for (int i = 1; i < graph.length; ++i) {
-            Vertex v = graph[i];
-            System.out.println("Degree of Vertex " + v.id + ": " + v.getDegree());
-        }
-        dfs(graph[1]);
-        bfs(graph[1]);
+
+        Node[] graph = readGraph();
+
+        max = 0;
+        
+        dfs(graph[0], 0);
+
+      
+        System.out.println(max);
     }
 
-    static void dfs(Vertex v) {
-        v.visited = true;
-        for (Edge e : v.adjacentEdges) {
-            if (!e.endpoint.visited) {
-                e.endpoint.distance = v.distance + e.weight;
-                dfs(e.endpoint);
+    static void dfs(Node n, long sum) {
+        n.visited = true;
+        max = Math.max(max,sum);
+
+        for (Edge e : n.edges) {
+            if (!e.endPoint.visited) {
+                dfs(e.endPoint, sum + e.weight);
             }
         }
     }
 
-    static void bfs(Vertex v) {
-        Queue<Vertex> q = new LinkedList<>();
-        v.visited = true;
-        v.distance = 0;
-        q.add(v);
-
-        while (!q.isEmpty()) {
-            Vertex current = q.poll();
-            for (Edge e : current.adjacentEdges) {
-                if (!e.endpoint.visited) {
-                    e.endpoint.visited = true;
-                    e.endpoint.distance = current.distance + e.weight;
-                    q.add(e.endpoint);
-                }
-            }
+    static Node[] readGraph(){
+        int n = sc.nextInt();
+        Node[] nodes = new Node[n];
+        for (int i = 0; i < n; i++) {
+            nodes[i] = new Node(i);
         }
+
+        for (int i = 0; i < n - 1; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            int weight = sc.nextInt();
+
+            nodes[u].edges.add(new Edge(nodes[v], weight));
+            nodes[v].edges.add(new Edge(nodes[u], weight));
+        }
+
+        return nodes;
     }
 
-    static Vertex[] readGraph() {
-        return new Vertex[0];
-    }
+    static class Node {
+        int id;
+        boolean visited;
+        List<Edge> edges = new ArrayList<>();
 
-    static class Vertex {
-        public int id;
-        public int distance = 0;
-        public boolean visited = false;
-        public List<Edge> adjacentEdges = new ArrayList<>();
-
-        public Vertex(int id) {
+        public Node(int id) {
             this.id = id;
-        }
-
-        public void addAdjacentVertex(Vertex vertex, int weight) {
-            Edge e = new Edge(vertex, weight);
-            adjacentEdges.add(e);
-        }
-
-        public int getDegree() {
-            return adjacentEdges.size();
-        }
-
-        @Override
-        public String toString() {
-            return "Vertex " + id;
         }
     }
 
     static class Edge {
-        Vertex endpoint;
-        int weight;
+        long weight;
+        Node endPoint;
 
-        public Edge(Vertex endpoint, int weight) {
-            this.endpoint = endpoint;
-            this.weight = weight;
+        public Edge(Node n, long w) {
+            this.endPoint = n;
+            this.weight = w;
         }
     }
 

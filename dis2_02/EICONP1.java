@@ -10,70 +10,68 @@ public class EICONP1 {
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
-
-        for (Vertex v : graph) {
+        for (Vertex v:graph) {
+            List<Vertex> compList = new ArrayList<>();
             if (!v.visited) {
-                List<Vertex> component = new ArrayList<>();
-                dfs(v, component);
-
+                dfs(v, compList);
+                
                 int minVertex = Integer.MAX_VALUE;
-
-                for (Vertex vertex : component) {
-                    minVertex = Math.min(minVertex,vertex.id);
-                    // if (vertex.id < minVertex) {
-                    //     minVertex = vertex.id;
-                    // }
+                for (Vertex u : compList) {
+                    minVertex = Math.min(minVertex, u.id);
                 }
 
-                sb.append(minVertex).append(" ").append(component.size()).append("\n");
+                sb.append(minVertex + " " + compList.size() + "\n");
             }
         }
-        System.out.print(sb);
+        System.out.println(sb);
+
     }
 
-    static void dfs(Vertex vertex, List<Vertex> component) {
-        vertex.visited = true;
-        component.add(vertex);
-        for (Vertex adjacentVertex : vertex.adjacentVertices) {
-            if (!adjacentVertex.visited) {
-                dfs(adjacentVertex, component);
+    static void dfs(Vertex v, List<Vertex> compList) {
+        v.visited = true;
+        compList.add(v);
+        for (Vertex u : v.adjList) {
+            if (!u.visited) {
+                dfs(u, compList);
             }
         }
+
     }
 
     static Vertex[] readGraph() {
-        int numberOfVertices = sc.nextInt();
-        int numberOfEdges = sc.nextInt();
+        int n = sc.nextInt();
+        int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[numberOfVertices];
-        for (int i = 0; i < vertices.length; ++i) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < numberOfEdges; ++i) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[u].addAdjacentVertex(vertices[v]);
-            vertices[v].addAdjacentVertex(vertices[u]);
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
     }
 
-    static class Vertex {
+    public static class Vertex {
 
-        int id;
-        boolean visited;
-        List<Vertex> adjacentVertices = new ArrayList<>();
+        public int id;
+        public boolean visited;
+        public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjacentVertex(Vertex v) {
-            adjacentVertices.add(v);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
+
     }
 
     static class InputReader {

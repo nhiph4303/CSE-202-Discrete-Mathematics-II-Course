@@ -10,72 +10,58 @@ public class EIUDFS2 {
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
-        int nVertices = sc.nextInt();
-        int nEdges = sc.nextInt();
-
-        Vertex[] graph = readGraph(nVertices, nEdges);
+        Vertex[] graph = readGraph();
         dfs(graph[0]);
         System.out.println(sb);
     }
 
-    static void dfs(Vertex vertex) {
-        vertex.visited = true;
-        sb.append(vertex.id + " ");
-        for (Vertex adjecentVertex : vertex.adjecentVertices) {
-            if (!adjecentVertex.visited) {
-                dfs(adjecentVertex);
+    public static void dfs(Vertex parent) {
+        parent.visited = true;
+        sb.append(parent.id + " ");
+        for (Vertex u : parent.adjList) {
+            if (!u.visited) {
+                dfs(u);
             }
         }
     }
 
-    static Vertex[] readGraph(int numberOfVertices, int numberOfEdges) {
-        Vertex[] vertices = new Vertex[numberOfVertices];
-        for (int i = 0; i < vertices.length; ++i) {
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < numberOfEdges; ++i) {
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[u].addNeighbor(vertices[v]);
-            vertices[v].addNeighbor(vertices[u]);
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         for (Vertex v : vertices) {
-            Collections.sort(v.adjecentVertices,
-                    (v1, v2) -> v1.id - v2.id);
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
         }
+
         return vertices;
     }
 
-    static class Vertex {
+    public static class Vertex {
 
-        int id;
-        boolean visited;
-        List<Vertex> adjecentVertices = new ArrayList<>();
+        public int id;
+        public boolean visited;
+        public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addNeighbor(Vertex v) {
-            adjecentVertices.add(v);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof Vertex) {
-                return ((Vertex) obj).id == id;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return id;
-        }
-
     }
 
     static class InputReader {
@@ -161,14 +147,16 @@ public class EIUDFS2 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -188,7 +176,8 @@ public class EIUDFS2 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

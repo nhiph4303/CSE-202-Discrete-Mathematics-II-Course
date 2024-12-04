@@ -8,63 +8,61 @@ public class EIFBF2 {
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
+    static int male;
+    static int female;
+    static List<Vertex> comp;
+
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-        int n = sc.nextInt();
-        int m = sc.nextInt();
+       
+        Vertex[] graph = readGraph();
 
-        Vertex[] vertices = readGraph(n, m);
+        for (int i = 1; i < graph.length; i++) {
 
-        for (int i = 1; i <= n; i++) {
-            if (!vertices[i].visited) {
-                List<Vertex> comp = new ArrayList<>();
-                dfs(vertices[i], comp);
-
-                int males = 0, females = 0;
+            if (!graph[i].visited) {
+                comp = new ArrayList<>();
+                male = 0;
+                female = 0;
+                dfs(graph[i]);
                 for (Vertex v : comp) {
-                    if ("Nu".equals(v.gender)) {
-                        females++;
-                    } else {
-                        males++;
-                    }
-                }
-
-                for (Vertex v : comp) {
-                    v.malesInComp = males;
-                    v.femalesInComp = females;
+                    v.totalMales = male;
+                    v.totalFemales = female;
                 }
             }
         }
 
-        for (int i = 1; i <= n; i++) {
-            sb.append(i).append(" ")
-                    .append(vertices[i].malesInComp).append(" ")
-                    .append(vertices[i].femalesInComp).append("\n");
+        for (int i = 1; i < graph.length; i++) {
+            sb.append(i + " " + graph[i].totalMales + " " + graph[i].totalFemales).append("\n");
         }
-
-        System.out.println(sb.toString().trim());
+        System.out.print(sb);
     }
 
-    static void dfs(Vertex v, List<Vertex> comp) {
+    static void dfs(Vertex v) {
         v.visited = true;
         comp.add(v);
 
-        for (Vertex neighbor : v.adjacentVertices) {
-            if (!neighbor.visited) {
-                dfs(neighbor, comp);
+        if (v.gender.equalsIgnoreCase("Nam")) {
+            male++;
+        } else {
+            female++;
+        }
+
+        for (Vertex vertex : v.adjacentVertices) {
+            if (!vertex.visited) {
+                dfs(vertex);
             }
         }
     }
 
-    static Vertex[] readGraph(int n, int m) {
+    static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
         Vertex[] vertices = new Vertex[n + 1];
         for (int i = 1; i <= n; i++) {
-            vertices[i] = new Vertex(i);
+            vertices[i] = new Vertex(i, sc.next());
         }
 
-        for (int i = 1; i <= n; i++) {
-            vertices[i].gender = sc.next();
-        }
 
         for (int i = 0; i < m; i++) {
             int a = sc.nextInt();
@@ -79,13 +77,13 @@ public class EIFBF2 {
     static class Vertex {
         public int id;
         public String gender;
-        public boolean visited = false;
+        public boolean visited;
         public List<Vertex> adjacentVertices = new ArrayList<>();
-        public int malesInComp;
-        public int femalesInComp;
+        int totalMales, totalFemales;
 
-        Vertex(int id) {
+        public Vertex(int id, String gender) {
             this.id = id;
+            this.gender = gender;
         }
 
         void addAdjacentVertex(Vertex vertex) {

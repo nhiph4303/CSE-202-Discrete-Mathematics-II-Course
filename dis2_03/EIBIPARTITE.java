@@ -82,7 +82,6 @@ public class EIBIPARTITE {
     }
 
     static class Vertex {
-
         public int id;
         public boolean visited = false;
         public int color = 1;
@@ -180,14 +179,16 @@ public class EIBIPARTITE {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -207,7 +208,8 @@ public class EIBIPARTITE {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

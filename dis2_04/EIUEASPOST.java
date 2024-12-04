@@ -9,51 +9,59 @@ public class EIUEASPOST {
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-        Vertex[] graph = readGraph();
+        int nNode = sc.nextInt();
 
-        List<Vertex> list = new ArrayList<>();
-        printPostOrder(graph[1], list);
-        for (Vertex v : list){
-            sb.append(v.id + " ");
+        if (nNode == 0) {
+            System.out.println("");
+            return;
         }
-        System.out.println(sb);
+
+        Node[] nodes = readTree(nNode);
+        List<Node> list = new ArrayList<>();
+        printPostOrder(nodes[0], list);
+
+        for (Node v : list) {
+            sb.append(v.id).append(" ");
+        }
+        System.out.println(sb.toString().trim());
     }
 
-    static void printPostOrder (Vertex v, List<Vertex> list){
-        if (v.left!=null){
+    public static void printPostOrder(Node v, List<Node> list) {
+        if (v.left != null) {
             printPostOrder(v.left, list);
         }
-        if (v.right!=null){
+        if (v.right != null) {
             printPostOrder(v.right, list);
         }
         list.add(v);
     }
 
-    static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = n;
-
-        Vertex[] vertices = new Vertex[n + 1];
-        for (int i = 1; i <= n; i++) {
-            vertices[i] = new Vertex(i);
+    public static Node[] readTree(int nNode) {
+        Node[] nodes = new Node[nNode];
+        for (int i = 0; i < nNode; i++) {
+            nodes[i] = new Node(i + 1);
         }
 
-        for (int i = 1; i <= m; i++) {
-            int u = sc.nextInt();
-            vertices[i].left = u > 0 ? vertices[u] : null;
-            int v = sc.nextInt();
-            vertices[i].right = v > 0 ? vertices[v] : null;
+        for (int i = 0; i < nNode; i++) {
+            int leftIndex = sc.nextInt();
+            if (leftIndex > 0 && leftIndex <= nNode) {
+                nodes[i].left = nodes[leftIndex - 1];
+            }
+            int rightIndex = sc.nextInt();
+            if (rightIndex > 0 && rightIndex <= nNode) {
+                nodes[i].right = nodes[rightIndex - 1];
+            }
         }
 
-        return vertices;
+        return nodes;
     }
 
-    static class Vertex {
-        int id;
-        Vertex left;
-        Vertex right;
+    public static class Node {
+        public int id;
+        public Node left;
+        public Node right;
 
-        public Vertex(int id) {
+        public Node(int id) {
             this.id = id;
         }
     }

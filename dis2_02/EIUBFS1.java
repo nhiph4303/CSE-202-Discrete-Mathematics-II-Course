@@ -11,63 +11,61 @@ public class EIUBFS1 {
         Vertex[] graph = readGraph();
         bfs(graph[0]);
         System.out.println(sb);
+
     }
 
-    static void bfs(Vertex v) {
-        Queue<Vertex> q = new ArrayDeque<Vertex>();
+    public static void bfs(Vertex v) {
+        Queue<Vertex> q = new ArrayDeque<>();
         q.add(v);
         v.visited = true;
 
         while (!q.isEmpty()) {
-            Vertex w = q.poll();
-            sb.append(w.id).append(" ");
-
-            for (Vertex x : w.adjacentVertices) {
-                if (!x.visited) {
-                    x.visited = true;
-                    q.add(x);
+            Vertex x = q.poll();
+            sb.append(x.id).append(" ");
+            for (Vertex u : x.adjList) {
+                if (!u.visited) {
+                    u.visited = true;
+                    q.add(u);
                 }
             }
         }
     }
 
-    static Vertex[] readGraph() {
-        int nVertices = sc.nextInt();
-        int nEdges = sc.nextInt();
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[nVertices + 1];
-        for (int i = 0; i < nVertices; ++i) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < nEdges; ++i) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
+        for (int i = 0; i < m; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
 
-            vertices[a].addAdjacentVertices(vertices[b]);
+            vertices[u].addAdjVertex(vertices[v]);
         }
 
-        for (int i = 0; i < nVertices; i++) {
-            vertices[i].adjacentVertices.sort((v1, v2) -> {
-                int compare = Integer.compare(v1.id, v2.id);
-                return compare;
-            });
+        for (Vertex v : vertices) {
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
         }
         return vertices;
     }
 
-    static class Vertex {
+    public static class Vertex {
 
         public int id;
         public boolean visited;
-        public List<Vertex> adjacentVertices = new ArrayList<Vertex>();
+        public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjacentVertices(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        public void addAdjVertex(Vertex v) {
+            adjList.add(v);
+
         }
     }
 

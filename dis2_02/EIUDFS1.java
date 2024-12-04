@@ -8,57 +8,54 @@ public class EIUDFS1 {
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
-        int nVertices = sc.nextInt();
-        int nEdges = sc.nextInt();
-
-        Vertex[] graph = readGraph(nVertices, nEdges);
+        Vertex[] graph = readGraph();
         dfs(graph[0]);
         System.out.println(sb);
     }
 
-    static void dfs(Vertex vertex) {
-        vertex.visited = true;
-        sb.append(vertex.id + " ");
-        for (Vertex adjecentVertex : vertex.adjecentVertices) {
-            if (!adjecentVertex.visited) {
-                dfs(adjecentVertex);
+    public static void dfs(Vertex v){
+        v.visited = true;
+        sb.append(v.id + " ");
+        for (Vertex u : v.adjList){
+            if (!u.visited){
+                dfs(u);
             }
         }
     }
 
-    static Vertex[] readGraph(int numberOfVertices, int numberOfEdges) {
-        Vertex[] vertices = new Vertex[numberOfVertices];
-        for (int i = 0; i < vertices.length; ++i) {
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        //Read all edges
-        for (int i = 0; i < numberOfEdges; ++i) {
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[u].addNeighbor(vertices[v]);
+            vertices[u].addAdjList(vertices[v]);
         }
 
         for (Vertex v : vertices) {
-            Collections.sort(v.adjecentVertices,
-                    (v1, v2) -> v1.id - v2.id);
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
         }
         return vertices;
     }
 
-    static class Vertex {
-
-        int id;
-        boolean visited;
-        List<Vertex> adjecentVertices = new ArrayList<>();
+    public static class Vertex {
+        public int id;
+        public boolean visited;
+        public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addNeighbor(Vertex v) {
-            adjecentVertices.add(v);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
     }
 

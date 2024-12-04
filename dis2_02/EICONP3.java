@@ -10,86 +10,72 @@ public class EICONP3 {
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
-        for (int i = 0; i < graph.length; i++) {
-            if (graph[i] != null && !graph[i].visited) {
-                sb.append(i).append(" ");
-                List<Vertex> verticesInComponent = new ArrayList<>();
-                bfs(graph[i], verticesInComponent);
-                sb.append("\n");
+        for (Vertex v : graph) {
+            List<Vertex> compList = new ArrayList<>();
+            int[] edgeCount = { 0 };
+            if (!v.visited) {
+                dfs(v, compList, edgeCount);
+
+                int minVertex = Integer.MAX_VALUE;
+                for (Vertex u : compList) {
+                    minVertex = Math.min(minVertex, u.id);
+                }
+
+                sb.append(minVertex + " " + compList.size() + " " + edgeCount[0] / 2 +
+
+                        "\n");
             }
         }
         System.out.println(sb);
 
     }
 
-    static void bfs(Vertex v, List<Vertex> verticesInComponent) {
-        Queue<Vertex> queue = new ArrayDeque<>();
-        int vertexCount = 0;
-        int edgeCount = 0;
-        queue.add(v);
+    static void dfs(Vertex v, List<Vertex> compList, int[] edgeCount) {
         v.visited = true;
-
-        while (!queue.isEmpty()) {
-            Vertex w = queue.poll();
-            verticesInComponent.add(w);
-
-            for (Vertex adjacent : w.adjacentVertices) {
-                if (!adjacent.visited) {
-                    adjacent.visited = true;
-                    queue.add(adjacent);
-                }
+        compList.add(v);
+        for (Vertex u : v.adjList) {
+            edgeCount[0]++;
+            if (!u.visited) {
+                dfs(u, compList, edgeCount);
             }
         }
 
-        vertexCount = verticesInComponent.size();
-        for (Vertex vertex : verticesInComponent) {
-            edgeCount += vertex.adjacentVertices.size();
-        }
-        edgeCount /= 2;
-
-        sb.append(vertexCount).append(" ").append(edgeCount).append(" ");
     }
 
     static Vertex[] readGraph() {
-        int nVertices = sc.nextInt();
-        int nEdges = sc.nextInt();
+        int n = sc.nextInt();
+        int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[nVertices + 1];
-        for (int i = 0; i < nVertices; ++i) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < nEdges; ++i) {
-            int a = sc.nextInt();
-            int b = sc.nextInt();
+        for (int i = 0; i < m; ++i) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
 
-            vertices[a].addAdjacentVertices(vertices[b]);
-            vertices[b].addAdjacentVertices(vertices[a]);
-        }
-
-        for (int i = 0; i < nVertices; i++) {
-            vertices[i].adjacentVertices.sort((v1, v2) -> {
-                int compare = Integer.compare(v1.id, v2.id);
-                return compare;
-            });
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
     }
 
-    static class Vertex {
+    public static class Vertex {
 
         public int id;
         public boolean visited;
-        public List<Vertex> adjacentVertices = new ArrayList<Vertex>();
+        public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjacentVertices(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
+
     }
 
     static class InputReader {
@@ -175,14 +161,16 @@ public class EICONP3 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -202,7 +190,8 @@ public class EICONP3 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

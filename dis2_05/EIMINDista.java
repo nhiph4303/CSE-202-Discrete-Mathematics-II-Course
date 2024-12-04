@@ -1,7 +1,5 @@
 package dis2_05;
 
-package dis2_05;
-
 import java.io.*;
 import java.util.*;
 

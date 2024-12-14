@@ -5,85 +5,87 @@ import java.util.*;
 
 public class EIUSEFI2 {
 
-    static InputReader reader;
+    static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
-        reader = new InputReader(System.in);
+        sc = new InputReader(System.in);
+
         HashMap<String, Vertex> map = readGraph();
         for (Map.Entry<String, Vertex> entry : map.entrySet()) {
-            entry.getValue().adjacentVertices.sort((v1, v2) -> {
+            entry.getValue().adjList.sort((v1, v2) -> {
                 return v1.name.compareToIgnoreCase(v2.name);
             });
         }
-        String source = reader.next();
-        String searchedWords = reader.next();
-        dfs(map.get(source), searchedWords);
-        System.out.println(sb);
 
+        String source = sc.next();
+        String searchedWords = sc.next();
+        dfs(map.get(source), searchedWords);
+
+        System.out.println(sb);
     }
 
-    static void dfs(Vertex v, String searchedWords) {
+    public static void dfs(Vertex v, String searchedWords) {
         v.visited = true;
         boolean check = false;
 
-        for (Vertex u : v.adjacentVertices) {
+        for (Vertex u : v.adjList) {
             if (u.visited == false) {
-                    check = true;
-                    dfs(u, searchedWords);
-                    v.paths += u.paths;
-            }}
-            if (!check && v.name.contains(searchedWords)) {
-                v.paths++;
+                check = true;
+                dfs(u, searchedWords);
+                v.paths += u.paths;
             }
-            if (check && v.paths != 0) {
-                sb.append(v.name + " " + v.paths + "\n");
-            }
+        }
+        if (!check && v.name.contains(searchedWords)) {
+            v.paths++;
+        }
+        if (check && v.paths != 0) {
+            sb.append(v.name + " " + v.paths + "\n");
+        }
 
-        
     }
 
-    static HashMap<String, Vertex> readGraph() {
-        int nVertices = reader.nextInt();
-        int nEdges = nVertices - 1;
+    public static HashMap<String, Vertex> readGraph() {
+        int n = sc.nextInt();
+        int m = n - 1;
 
         HashMap<String, Vertex> map = new HashMap<>();
-        for (int i = 0; i < nEdges; i++) {
-            String a = reader.next();
-            String b = reader.next();
+        for (int i = 0; i < m; i++) {
+            String u = sc.next();
+            String v = sc.next();
 
-            if (map.get(a) == null) {
-                Vertex vA = new Vertex(a);
-                map.put(a, vA);
+            if (map.get(u) == null) {
+                Vertex vA = new Vertex(u);
+                map.put(u, vA);
             }
 
-            if (map.get(b) == null) {
-                Vertex vB = new Vertex(b);
-                map.put(b, vB);
+            if (map.get(v) == null) {
+                Vertex vB = new Vertex(v);
+                map.put(v, vB);
             }
-            map.get(a).addAdjacentVertices(map.get(b));
-            map.get(b).addAdjacentVertices(map.get(a));
+            map.get(u).addAdjList(map.get(v));
+            map.get(v).addAdjList(map.get(u));
         }
 
         return map;
     }
 
-    static class Vertex {
-        String name;
+    public static class Vertex {
+        public String name;
         public boolean visited;
-        public List<Vertex> adjacentVertices = new ArrayList<Vertex>();
-        int paths;
+        public List<Vertex> adjList = new ArrayList<Vertex>();
+        public int paths;
 
         public Vertex(String name) {
             this.name = name;
         }
 
-        public void addAdjacentVertices(Vertex vertex) {
-            adjacentVertices.add(vertex);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
     }
 
-    static class InputReader {
+    public static class InputReader {
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;

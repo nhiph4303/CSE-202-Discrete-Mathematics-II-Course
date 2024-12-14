@@ -3,42 +3,44 @@ package dis2_05;
 import java.io.*;
 import java.util.*;
 
-public class EIMINDista {
+public class EIMINDISTA {
 
-    static InputReader reader;
+    static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
-        reader = new InputReader(System.in);
+        sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
-        PriorityQueue<Vertex> pq = new PriorityQueue<>((e1,e2)->{
+
+        PriorityQueue<Vertex> pq = new PriorityQueue<>((e1, e2) -> {
             return Integer.compare(e1.cost, e2.cost);
         });
+
         pq.add(graph[0]);
         graph[0].cost = 0;
-        while(!pq.isEmpty()){
+        
+        while (!pq.isEmpty()) {
             Vertex polledV = pq.poll();
 
-            if(polledV.visited){
+            if (polledV.visited) {
                 continue;
             }
 
-            if(polledV.cost == Integer.MAX_VALUE){
+            if (polledV.cost == Integer.MAX_VALUE) {
                 break;
             }
 
-            for(Edge e: polledV.adjacentEdges){
-                if(e.endpoint.cost> e.weight + polledV.cost){
+            for (Edge e : polledV.adjList) {
+                if (e.endpoint.cost > e.weight + polledV.cost) {
                     e.endpoint.cost = e.weight + polledV.cost;
                     pq.add(e.endpoint);
                 }
             }
         }
         for (int i = 1; i < graph.length; i++) {
-            if(graph[i].cost != Integer.MAX_VALUE){
+            if (graph[i].cost != Integer.MAX_VALUE) {
                 sb.append(graph[i].cost);
-            }
-            else{
+            } else {
                 sb.append("-1");
             }
             sb.append(" ");
@@ -46,10 +48,9 @@ public class EIMINDista {
         System.out.println(sb);
     }
 
-
-    static Vertex[] readGraph(){
-        int nVertices = reader.nextInt();
-        int nEdges = reader.nextInt();
+    static Vertex[] readGraph() {
+        int nVertices = sc.nextInt();
+        int nEdges = sc.nextInt();
 
         Vertex[] vertices = new Vertex[nVertices];
 
@@ -58,31 +59,32 @@ public class EIMINDista {
         }
 
         for (int i = 0; i < nEdges; i++) {
-            int a = reader.nextInt();
-            int b = reader.nextInt();
-            int w = reader.nextInt();
-            
-            vertices[a].addAdjacentEdges(w, vertices[b]);
-            vertices[b].addAdjacentEdges(w, vertices[a]);;
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            int w = sc.nextInt();
+
+            vertices[u].addAdjList(w, vertices[v]);
+            vertices[v].addAdjList(w, vertices[u]);
+            ;
         }
 
         return vertices;
     }
 
-    static class Edge{
+    static class Edge {
         int weight;
         Vertex endpoint;
 
         public Edge(int weight, Vertex endpoint) {
             this.weight = weight;
             this.endpoint = endpoint;
-        }    
+        }
     }
 
-    static class Vertex{
+    public static class Vertex {
         int id;
         boolean visited;
-        List<Edge> adjacentEdges = new ArrayList<>();
+        List<Edge> adjList = new ArrayList<>();
         int cost;
 
         public Vertex(int id) {
@@ -90,13 +92,13 @@ public class EIMINDista {
             this.cost = Integer.MAX_VALUE;
         }
 
-        public void addAdjacentEdges(int weight, Vertex endpoint){
+        public void addAdjList(int weight, Vertex endpoint) {
             Edge e = new Edge(weight, endpoint);
-            adjacentEdges.add(e);
+            adjList.add(e);
         }
     }
 
-    static class InputReader {
+    public static class InputReader {
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;

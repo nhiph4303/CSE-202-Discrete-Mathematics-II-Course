@@ -3,104 +3,91 @@ package dis2_05;
 import java.io.*;
 import java.util.*;
 
-class EiuWBTsum {
-    static InputReader reader;
+public class EIMAXHTR_full {
+
+    static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static Vertex mainNode = new Vertex(Integer.MAX_VALUE);
-    static long totalWeight;
 
     public static void main(String[] args) throws IOException {
-        reader = new InputReader(System.in);
-        mainNode.leftWeight = Long.MAX_VALUE;
-        mainNode.rightWeight = 0;
+        sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
-        DFS(graph[2]);
-        if (mainNode.id == Integer.MAX_VALUE) {
-            sb.append("-1");
-        } else {
-            sb.append(mainNode.id + " " + Math.min(mainNode.leftWeight, mainNode.rightWeight) + " "
-                    + Math.max(mainNode.rightWeight, mainNode.leftWeight));
-        }
-        System.out.println(sb);
 
+        Vertex vA = findFurthest(graph[0], graph);
+        Vertex vB = findFurthest(vA, graph);
+
+        System.out.println(Math.min(vA.id, vB.id)+" "+vB.level);
+    }
+    
+    public static Vertex findFurthest(Vertex v, Vertex[] graph){
+        Vertex maxVertex = null;
+        int maxHeight = -1;
+        for(Vertex o: graph){
+            o.level = 0;
+        }
+
+        dfs(v);
+
+            for (Vertex u : graph) {
+                if (u.level > maxHeight) {
+                    maxHeight = u.level;
+                    maxVertex = u;
+                }
+                u.visited = false;
+            }
+        return maxVertex;
     }
 
-    static long DFS(Vertex v) {
-        long temp = v.weight;
+    public static void dfs(Vertex v) {
         v.visited = true;
-        if (v.adjacentVertices.size() == 2) {
-            for (Vertex u : v.adjacentVertices) {
-                if (!u.visited) {
-                    DFS(u);
-                    v.leftWeight += u.weight;
-                    v.weight += u.weight;
-                }
 
-                v.rightWeight = totalWeight - v.leftWeight - temp;
-                if (v.getDif() < mainNode.getDif()) {
-                    mainNode = v;
-                } else if (v.getDif() == mainNode.getDif() && v.id < mainNode.id) {
-                    mainNode = v;
-                }
-
-            }
-        } else {
-            for (Vertex u : v.adjacentVertices) {
-                if (!u.visited) {
-                    DFS(u);
-                    v.weight += u.weight;
-                }
+        for (Vertex w : v.adjList) {
+            if (!w.visited) {
+                w.level = v.level + 1;
+                dfs(w);
             }
         }
-
-        return v.weight;
     }
 
-    static Vertex[] readGraph() {
-        int nVertices = reader.nextInt();
-        int nEdges = nVertices - 1;
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = n - 1;
 
-        Vertex[] vertices = new Vertex[nVertices + 1];
-        for (int i = 1; i <= nVertices; ++i) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
-            int weightInput = reader.nextInt();
-            vertices[i].weight = weightInput;
-            totalWeight += vertices[i].weight;
         }
 
-        for (int i = 0; i < nEdges; ++i) {
-            int a = reader.nextInt();
-            int b = reader.nextInt();
+        for (int i = 0; i < m; ++i) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
 
-            vertices[a].addAdjacentVertices(vertices[b]);
-            vertices[b].addAdjacentVertices(vertices[a]);
+            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
+        }
+
+        
+        for (Vertex v : vertices) {
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
         }
         return vertices;
     }
 
-    static class Vertex {
-        int id;
-        boolean visited;
-        List<Vertex> adjacentVertices;
-        long leftWeight;
-        long rightWeight;
-        long weight;
+    public static class Vertex {
+        public int id;
+        public int level = 0;
+        public boolean visited;
+        public List<Vertex> adjList = new ArrayList<Vertex>();
 
         public Vertex(int id) {
             this.id = id;
-            adjacentVertices = new ArrayList<>();
         }
 
-        public void addAdjacentVertices(Vertex v) {
-            adjacentVertices.add(v);
-        }
-
-        public long getDif() {
-            return Math.abs(leftWeight - rightWeight);
+        public void addAdjList(Vertex v) {
+            adjList.add(v);
         }
     }
 
-    static class InputReader {
+    public static class InputReader {
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;

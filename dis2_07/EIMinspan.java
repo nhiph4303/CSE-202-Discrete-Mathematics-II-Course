@@ -3,95 +3,99 @@ package dis2_07;
 import java.io.*;
 import java.util.*;
 
-public class EIMinspan {
+public class EIMINSPAN {
 
-    static InputReader reader;
+    static InputReader sc;
     static StringBuilder sb = new StringBuilder();
+
     static int countVertices;
     static int totalDis = 0;
 
     public static void main(String[] args) throws IOException {
-        reader = new InputReader(System.in);
+        sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
-        PriorityQueue<Edge> pq = new PriorityQueue<>((e1,e2)->{
+
+        PriorityQueue<Edge> pq = new PriorityQueue<>((e1, e2) -> {
             return Integer.compare(e1.weight, e2.weight);
         });
+
         Edge startEdge = new Edge(0, graph[0]);
         pq.add(startEdge);
 
-        while(!pq.isEmpty()){
+        while (!pq.isEmpty()) {
             Edge polledE = pq.poll();
             if (polledE.endpoint.visited) {
                 continue;
             }
+
             polledE.endpoint.visited = true;
             totalDis += polledE.weight;
             countVertices--;
 
-            for(Edge u: polledE.endpoint.adjacentEdges){
-                if(u.endpoint.visited == false){
+            for (Edge u : polledE.endpoint.adjList) {
+                if (u.endpoint.visited == false) {
                     pq.add(u);
                 }
             }
         }
-        if(countVertices==0){
+
+        if (countVertices == 0) {
             System.out.println(totalDis);
-        }
-        else{
+        } else {
             System.out.println("-1");
         }
     }
 
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
 
-    static Vertex[] readGraph(){
-        int nVertices = reader.nextInt();
-        countVertices = nVertices;
-        int nEdges = reader.nextInt();
+        countVertices = n;
+        int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[nVertices];
+        Vertex[] vertices = new Vertex[n];
 
         for (int i = 0; i < vertices.length; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < nEdges; i++) {
-            int a = reader.nextInt();
-            int b = reader.nextInt();
-            int w = reader.nextInt();
-            
-            vertices[a].addAdjacentEdges(w, vertices[b]);
-            vertices[b].addAdjacentEdges(w, vertices[a]);;
+        for (int i = 0; i < m; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            int w = sc.nextInt();
+
+            vertices[u].addAdjList(w, vertices[v]);
+            vertices[v].addAdjList(w, vertices[u]);
         }
 
         return vertices;
     }
 
-    static class Edge{
+    public static class Edge {
         int weight;
         Vertex endpoint;
 
         public Edge(int weight, Vertex endpoint) {
             this.weight = weight;
             this.endpoint = endpoint;
-        }    
+        }
     }
 
-    static class Vertex{
+    public static class Vertex {
         int id;
         boolean visited;
-        List<Edge> adjacentEdges = new ArrayList<>();
+        List<Edge> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjacentEdges(int weight, Vertex endpoint){
+        public void addAdjList(int weight, Vertex endpoint) {
             Edge e = new Edge(weight, endpoint);
-            adjacentEdges.add(e);
+            adjList.add(e);
         }
     }
 
-    static class InputReader {
+    public static class InputReader {
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;

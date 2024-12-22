@@ -38,6 +38,7 @@ public class EIHCON {
                         break;
                     }
                 }
+
                 if (!flag) {
                     sb.append("N\n");
                 }

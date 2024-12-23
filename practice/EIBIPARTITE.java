@@ -2,25 +2,54 @@ package practice;
 
 import java.util.*;
 
-public class EIUDFS2 {
+public class EIBIPARTITE {
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
-        Vertex[] graph = readGraph();
-        dfs(graph[0]);
+        int n = sc.nextInt();
+        for (int i = 0; i<n; i++){
+            Vertex[] graph = readGraph();
+
+            for (Vertex v : graph){
+                if (!v.visited){
+                    bfs(v);
+                }
+            }
+
+            sb.append(isBipartite(graph) ? "Yes\n" : "No\n");
+        }
         System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
-        v.visited = true;
-        sb.append(v.id + " ");
-
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+    public static boolean isBipartite(Vertex[] graph) {
+        for (Vertex v : graph) {
+            for (Vertex u : v.adjList) {
+                if (v.color == u.color) {
+                    return false;
+                }
             }
         }
+        return true;
+    }
+
+    public static void bfs(Vertex v) {
+        Queue<Vertex> q = new ArrayDeque<>();
+        v.visited = true;
+        q.add(v);
+
+        while (!q.isEmpty()) {
+            Vertex u = q.poll();
+
+            for (Vertex w : u.adjList) {
+                if (!w.visited) {
+                    w.visited = true;
+                    q.add(w);
+                    w.color = 3 - u.color;
+                }
+            }
+        }
+
     }
 
     public static Vertex[] readGraph() {
@@ -40,13 +69,11 @@ public class EIUDFS2 {
             vertices[v].addAdjList(vertices[u]);
         }
 
-        for (Vertex v : vertices) {
-            v.adjList.sort((a, b) -> a.id - b.id);
-        }
         return vertices;
     }
 
     public static class Vertex {
+        int color = 1;
         int id;
         boolean visited;
         ArrayList<Vertex> adjList = new ArrayList<>();

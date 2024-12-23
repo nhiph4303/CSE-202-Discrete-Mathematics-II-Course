@@ -11,18 +11,18 @@ public class EIUSUFBF {
         int m = sc.nextInt();
         int l = sc.nextInt();
 
-        Vertex[] graph = readGraph(n,m);
+        Vertex[] graph = readGraph(n, m);
         suggestFriend(n, graph, l);
         System.out.println(sb);
 
     }
 
-    public static void suggestFriend(int n, Vertex[] list, int l){
-        for(int i = 0; i < n; i++){
-            Collections.sort(list[i].adjList, (a,b) -> a.id - b.id);
+    public static void suggestFriend(int n, Vertex[] list, int l) {
+        for (int i = 0; i < n; i++) {
+            list[i].adjList.sort((a, b) -> a.id - b.id);
             sb.append(list[i].id);
-            for(Vertex x: list[i].adjList){
-                if(x.getNumberOfFriend() < l){
+            for (Vertex x : list[i].adjList) {
+                if (x.getNumberOfFriend() < l) {
                     sb.append(" ").append(x.id);
                 }
             }
@@ -58,7 +58,7 @@ public class EIUSUFBF {
             adjList.add(v);
         }
 
-        public int getNumberOfFriend(){
+        public int getNumberOfFriend() {
             return adjList.size();
         }
     }

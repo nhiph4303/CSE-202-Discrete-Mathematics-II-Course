@@ -27,7 +27,7 @@ public class EIMKF {
         for (Vertex u : v.adjList) {
             listFriend.add(u);
         }
-        Collections.sort(listFriend, (a, b) -> a.id - b.id);
+        listFriend.sort((a, b) -> a.id - b.id);
         return listFriend;
     }
 

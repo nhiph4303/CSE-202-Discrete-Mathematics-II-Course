@@ -18,13 +18,10 @@ public class EIPEOYMK {
         Map<Integer, List<Integer>> levelMap = new HashMap<>();
 
         for (Vertex vertex : graph) {
-
             if (vertex.level != -1) {
-
                 if (!levelMap.containsKey(vertex.level)) {
                     levelMap.put(vertex.level, new ArrayList<>());
                 }
-
                 levelMap.get(vertex.level).add(vertex.id);
             }
         }
@@ -32,14 +29,12 @@ public class EIPEOYMK {
         int q = sc.nextInt();
 
         for (int i = 0; i < q; i++) {
-
             int k = sc.nextInt();
             List<Integer> friends = levelMap.get(k);
 
             if (friends == null || friends.isEmpty()) {
                 sb.append("-1\n");
             }
-
             else {
                 for (int id : friends) {
                     sb.append(id).append(" ");

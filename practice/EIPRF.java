@@ -2,25 +2,38 @@ package practice;
 
 import java.util.*;
 
-public class EIUDFS2 {
+public class EIPRF {
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
-        dfs(graph[0]);
+        List<Vertex> path = new ArrayList<>();
+
+        if (dfs(graph[0], path)) {
+            for (Vertex v : path) {
+                sb.append(v.id + " ");
+            }
+        }
         System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
+    public static boolean dfs(Vertex v, List<Vertex> path) {
         v.visited = true;
-        sb.append(v.id + " ");
+        path.add(v);
 
         for (Vertex u : v.adjList) {
             if (!u.visited) {
-                dfs(u);
+                if (dfs(u, path)) {
+                    return true;
+                }
+            } else if (u.id == 0) {
+                return true;
             }
         }
+
+        path.remove(path.size() - 1);
+        return false;
     }
 
     public static Vertex[] readGraph() {

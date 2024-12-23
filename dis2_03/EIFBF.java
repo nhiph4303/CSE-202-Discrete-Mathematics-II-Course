@@ -15,7 +15,7 @@ public class EIFBF {
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
         Vertex[] graph = readGraph();
-        
+
         for (int i = 1; i < graph.length; i++) {
             if (!graph[i].visited) {
                 maxVertex = -1;
@@ -26,7 +26,8 @@ public class EIFBF {
             }
         }
 
-        Collections.sort(compList, (c1, c2) -> c1.maxVertex - c2.maxVertex);
+        compList.sort((c1, c2) -> c1.maxVertex - c2.maxVertex);
+        
         for (Component c : compList) {
             sb.append(c.maxVertex + " " + c.male + " " + c.female + "\n");
         }

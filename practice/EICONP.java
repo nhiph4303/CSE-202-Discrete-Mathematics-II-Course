@@ -2,19 +2,25 @@ package practice;
 
 import java.util.*;
 
-public class EIUDFS2 {
+public class EICONP {
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
-        dfs(graph[0]);
-        System.out.println(sb);
+
+        int nComp = 0;
+        for (Vertex v :graph){
+            if (!v.visited){
+                dfs(v);
+                nComp++;
+            }
+        }
+        System.out.println(nComp);
     }
 
     public static void dfs(Vertex v) {
         v.visited = true;
-        sb.append(v.id + " ");
 
         for (Vertex u : v.adjList) {
             if (!u.visited) {
@@ -40,9 +46,6 @@ public class EIUDFS2 {
             vertices[v].addAdjList(vertices[u]);
         }
 
-        for (Vertex v : vertices) {
-            v.adjList.sort((a, b) -> a.id - b.id);
-        }
         return vertices;
     }
 

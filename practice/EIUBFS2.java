@@ -2,23 +2,30 @@ package practice;
 
 import java.util.*;
 
-public class EIUDFS2 {
+public class EIUBFS2 {
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
-        dfs(graph[0]);
+        bfs(graph[0]);
         System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
+    public static void bfs(Vertex v) {
+        Queue<Vertex> q = new ArrayDeque<>();
         v.visited = true;
-        sb.append(v.id + " ");
+        q.add(v);
 
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        while (!q.isEmpty()) {
+            Vertex x = q.poll();
+            sb.append(x.id + " ");
+
+            for (Vertex w : x.adjList) {
+                if (!w.visited) {
+                    w.visited = true;
+                    q.add(w);
+                }
             }
         }
     }

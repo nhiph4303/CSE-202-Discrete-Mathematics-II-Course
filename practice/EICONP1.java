@@ -2,23 +2,36 @@ package practice;
 
 import java.util.*;
 
-public class EIUDFS2 {
+public class EICONP1 {
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
-        dfs(graph[0]);
+
+        for (Vertex v :graph){
+            List<Vertex> compList = new ArrayList<>();
+
+            if (!v.visited){
+                dfs(v,compList);
+                
+                int minVertex = Integer.MAX_VALUE;
+                for (Vertex u : compList){
+                    minVertex = Math.min(minVertex, u.id);
+                }
+                sb.append(minVertex + " " + compList.size() +"\n");
+            }
+        }
         System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
+    public static void dfs(Vertex v, List<Vertex> compList) {
         v.visited = true;
-        sb.append(v.id + " ");
+        compList.add(v);
 
         for (Vertex u : v.adjList) {
             if (!u.visited) {
-                dfs(u);
+                dfs(u, compList);
             }
         }
     }
@@ -40,9 +53,6 @@ public class EIUDFS2 {
             vertices[v].addAdjList(vertices[u]);
         }
 
-        for (Vertex v : vertices) {
-            v.adjList.sort((a, b) -> a.id - b.id);
-        }
         return vertices;
     }
 

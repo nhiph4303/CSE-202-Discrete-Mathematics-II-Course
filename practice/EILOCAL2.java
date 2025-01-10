@@ -55,6 +55,7 @@ public class EILOCAL2 {
         public Node(int id) {
             this.id = id;
         }
+
     }
 
     static class Edge {
@@ -66,4 +67,5 @@ public class EILOCAL2 {
             this.weight = w;
         }
     }
+    
 }

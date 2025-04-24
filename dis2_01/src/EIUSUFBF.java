@@ -1,39 +1,36 @@
 import java.io.*;
 import java.util.*;
 
-public class EICON {
-    
+public class EIUSUFBF {
+
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
         int n = sc.nextInt();
         int m = sc.nextInt();
-        int q = sc.nextInt();
+        int l = sc.nextInt();
 
         Vertex[] graph = readGraph(n, m);
-        result(q, graph);
-    }
+        for (int i = 0; i < n; i++) {
+            Vertex v = graph[i];
+            sb.append(i + " ");
 
-    public static void result(int q, Vertex[] graph) {
-        for (int i = 0; i < q; i++) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-
-            if (graph[u].adjList.contains(graph[v])) {
-                sb.append("Y\n");
-            } else {
-                sb.append("N\n");
+            for (Vertex u : v.adjList) {
+                if (u.adjList.size() < l) {
+                    sb.append(u.id + " ");
+                }
             }
+            
+            sb.append("\n");
         }
         System.out.println(sb);
     }
 
     public static Vertex[] readGraph(int n, int m) {
-        Vertex[] vertices = new Vertex[n + 1];
-        for (int i = 1; i <= n; ++i) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
@@ -41,9 +38,13 @@ public class EICON {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
+            vertices[u].addAdjList(vertices[v]);
             vertices[v].addAdjList(vertices[u]);
         }
 
+        for (Vertex v : vertices) {
+            v.adjList.sort((v1, v2) -> Integer.compare(v1.id, v2.id));
+        }
         return vertices;
     }
 
@@ -51,11 +52,11 @@ public class EICON {
         public int id;
         public List<Vertex> adjList = new ArrayList<>();
 
-        public Vertex (int id){
+        public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjList (Vertex v){
+        public void addAdjList(Vertex v) {
             adjList.add(v);
         }
     }

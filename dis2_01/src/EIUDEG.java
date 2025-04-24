@@ -1,39 +1,29 @@
 import java.io.*;
 import java.util.*;
 
-public class EICON {
-    
+public class EIUDEG {
+
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-        int q = sc.nextInt();
-
-        Vertex[] graph = readGraph(n, m);
-        result(q, graph);
-    }
-
-    public static void result(int q, Vertex[] graph) {
-        for (int i = 0; i < q; i++) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-
-            if (graph[u].adjList.contains(graph[v])) {
-                sb.append("Y\n");
-            } else {
-                sb.append("N\n");
-            }
+        Vertex[] graph = readGraph();
+        for (int i = 1; i < graph.length; i++) {
+            Vertex v = graph[i];
+            sb.append(v.getDegree() + " ");
         }
+
         System.out.println(sb);
     }
 
-    public static Vertex[] readGraph(int n, int m) {
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
         Vertex[] vertices = new Vertex[n + 1];
-        for (int i = 1; i <= n; ++i) {
+        for (int i = 1; i <= n; i++) {
             vertices[i] = new Vertex(i);
         }
 
@@ -42,6 +32,7 @@ public class EICON {
             int v = sc.nextInt();
 
             vertices[v].addAdjList(vertices[u]);
+            vertices[u].addAdjList(vertices[v]);
         }
 
         return vertices;
@@ -51,12 +42,16 @@ public class EICON {
         public int id;
         public List<Vertex> adjList = new ArrayList<>();
 
-        public Vertex (int id){
+        public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjList (Vertex v){
+        public void addAdjList(Vertex v) {
             adjList.add(v);
+        }
+
+        public int getDegree(){
+            return adjList.size();
         }
     }
 

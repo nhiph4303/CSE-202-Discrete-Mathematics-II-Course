@@ -1,8 +1,8 @@
 import java.io.*;
 import java.util.*;
 
-public class EICON {
-    
+public class EIHCON {
+
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
@@ -22,10 +22,24 @@ public class EICON {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            if (graph[u].adjList.contains(graph[v])) {
+            Vertex vertexU = graph[u];
+            Vertex vertexV = graph[v];
+
+            if (vertexU.adjList.contains(vertexV)) {
                 sb.append("Y\n");
             } else {
-                sb.append("N\n");
+                boolean flag = false;
+                for (Vertex vertexY : vertexU.adjList) {
+                    if (vertexY.adjList.contains(vertexV)) {
+                        sb.append("Y\n");
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if (!flag){
+                    sb.append("N\n");
+                }
             }
         }
         System.out.println(sb);
@@ -33,7 +47,7 @@ public class EICON {
 
     public static Vertex[] readGraph(int n, int m) {
         Vertex[] vertices = new Vertex[n + 1];
-        for (int i = 1; i <= n; ++i) {
+        for (int i = 1; i <= n; i++) {
             vertices[i] = new Vertex(i);
         }
 
@@ -51,11 +65,11 @@ public class EICON {
         public int id;
         public List<Vertex> adjList = new ArrayList<>();
 
-        public Vertex (int id){
+        public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjList (Vertex v){
+        public void addAdjList(Vertex v) {
             adjList.add(v);
         }
     }

@@ -1,37 +1,40 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIPRF {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
         Vertex[] graph = readGraph();
+        List<Vertex> path = new ArrayList<>();
 
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
+        if (dfs(graph[0], path)) {
+            for (Vertex v : path) {
+                sb.append(v.id + " ");
             }
+            System.out.println(sb);
         }
-        System.out.println(sb.toString());
     }
 
-    public static void dfs(Vertex v) {
+    public static boolean dfs(Vertex v, List<Vertex> path) {
         v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        path.add(v);
+
+        for (Vertex w : v.adjList) {
+            if (!w.visited) {
+                if (dfs(w, path)) {
+                    return true;
+                }
+            } else if (w.id == 0) {
+                return true;
             }
         }
+
+        path.remove(path.size() - 1);
+        return false;
     }
 
     public static Vertex[] readGraph() {
@@ -39,24 +42,27 @@ public class EICONP1 {
         int m = sc.nextInt();
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
         }
 
+        for (Vertex v : vertices) {
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
+        }
         return vertices;
     }
 
     public static class Vertex {
+
         public int id;
-        public boolean visited;
+        public boolean visited = false;
         public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
@@ -66,7 +72,6 @@ public class EICONP1 {
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
     static class InputReader {

@@ -1,81 +1,108 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIMINDISTA {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
         Vertex[] graph = readGraph();
 
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
+        PriorityQueue<Vertex> pq = new PriorityQueue<>((e1, e2) -> {
+            return Integer.compare(e1.cost, e2.cost);
+        });
+
+        pq.add(graph[0]);
+        graph[0].cost = 0;
+        
+        while (!pq.isEmpty()) {
+            Vertex polledV = pq.poll();
+
+            if (polledV.visited) {
+                continue;
+            }
+
+            if (polledV.cost == Integer.MAX_VALUE) {
+                break;
+            }
+
+            for (Edge e : polledV.adjList) {
+                if (e.endpoint.cost > e.weight + polledV.cost) {
+                    e.endpoint.cost = e.weight + polledV.cost;
+                    pq.add(e.endpoint);
+                }
             }
         }
-        System.out.println(sb.toString());
-    }
-
-    public static void dfs(Vertex v) {
-        v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        for (int i = 1; i < graph.length; i++) {
+            if (graph[i].cost != Integer.MAX_VALUE) {
+                sb.append(graph[i].cost);
+            } else {
+                sb.append("-1");
             }
+            sb.append(" ");
         }
+        System.out.println(sb);
     }
 
-    public static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = sc.nextInt();
+    static Vertex[] readGraph() {
+        int nVertices = sc.nextInt();
+        int nEdges = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        Vertex[] vertices = new Vertex[nVertices];
+
+        for (int i = 0; i < vertices.length; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < nEdges; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
+            int w = sc.nextInt();
 
-            vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+            vertices[u].addAdjList(w, vertices[v]);
+            vertices[v].addAdjList(w, vertices[u]);
+            ;
         }
 
         return vertices;
     }
 
+    static class Edge {
+        int weight;
+        Vertex endpoint;
+
+        public Edge(int weight, Vertex endpoint) {
+            this.weight = weight;
+            this.endpoint = endpoint;
+        }
+    }
+
     public static class Vertex {
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        int id;
+        boolean visited;
+        List<Edge> adjList = new ArrayList<>();
+        int cost;
 
         public Vertex(int id) {
             this.id = id;
+            this.cost = Integer.MAX_VALUE;
         }
 
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
+        public void addAdjList(int weight, Vertex endpoint) {
+            Edge e = new Edge(weight, endpoint);
+            adjList.add(e);
         }
-
     }
 
-    static class InputReader {
-
+    public static class InputReader {
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;
 
         public InputReader(InputStream stream) throws IOException {
+
             inbuf = new byte[2 << 23];
             lenbuf = 0;
             ptrbuf = 0;
@@ -113,7 +140,7 @@ public class EICONP1 {
             int b = skip();
             StringBuilder sb = new StringBuilder();
             while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                // != ' ')
+                                        // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
@@ -121,9 +148,8 @@ public class EICONP1 {
         }
 
         private int readByte() {
-            if (lenbuf == -1) {
+            if (lenbuf == -1)
                 throw new InputMismatchException();
-            }
             if (ptrbuf >= lenbuf) {
                 ptrbuf = 0;
                 try {
@@ -131,9 +157,8 @@ public class EICONP1 {
                 } catch (IOException e) {
                     throw new InputMismatchException();
                 }
-                if (lenbuf <= 0) {
+                if (lenbuf <= 0)
                     return -1;
-                }
             }
             return inbuf[ptrbuf++];
         }

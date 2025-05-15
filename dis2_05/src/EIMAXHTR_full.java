@@ -1,49 +1,61 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIMAXHTR_full {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
         Vertex[] graph = readGraph();
 
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
-            }
+        Vertex vA = findFurthest(graph[0], graph);
+        Vertex vB = findFurthest(vA, graph);
+
+        System.out.println(Math.min(vA.id, vB.id)+" "+vB.level);
+    }
+    
+    public static Vertex findFurthest(Vertex v, Vertex[] graph){
+        Vertex maxVertex = null;
+        int maxHeight = -1;
+        for(Vertex o: graph){
+            o.level = 0;
         }
-        System.out.println(sb.toString());
+
+        dfs(v);
+
+            for (Vertex u : graph) {
+                if (u.level > maxHeight) {
+                    maxHeight = u.level;
+                    maxVertex = u;
+                }
+                u.visited = false;
+            }
+        return maxVertex;
     }
 
     public static void dfs(Vertex v) {
         v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+
+        for (Vertex w : v.adjList) {
+            if (!w.visited) {
+                w.level = v.level + 1;
+                dfs(w);
             }
         }
     }
 
     public static Vertex[] readGraph() {
         int n = sc.nextInt();
-        int m = sc.nextInt();
+        int m = n - 1;
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
@@ -51,13 +63,18 @@ public class EICONP1 {
             vertices[v].addAdjList(vertices[u]);
         }
 
+        
+        for (Vertex v : vertices) {
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
+        }
         return vertices;
     }
 
     public static class Vertex {
         public int id;
+        public int level = 0;
         public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        public List<Vertex> adjList = new ArrayList<Vertex>();
 
         public Vertex(int id) {
             this.id = id;
@@ -66,16 +83,15 @@ public class EICONP1 {
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
-    static class InputReader {
-
+    public static class InputReader {
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;
 
         public InputReader(InputStream stream) throws IOException {
+
             inbuf = new byte[2 << 23];
             lenbuf = 0;
             ptrbuf = 0;
@@ -113,7 +129,7 @@ public class EICONP1 {
             int b = skip();
             StringBuilder sb = new StringBuilder();
             while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                // != ' ')
+                                        // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
@@ -121,9 +137,8 @@ public class EICONP1 {
         }
 
         private int readByte() {
-            if (lenbuf == -1) {
+            if (lenbuf == -1)
                 throw new InputMismatchException();
-            }
             if (ptrbuf >= lenbuf) {
                 ptrbuf = 0;
                 try {
@@ -131,9 +146,8 @@ public class EICONP1 {
                 } catch (IOException e) {
                     throw new InputMismatchException();
                 }
-                if (lenbuf <= 0) {
+                if (lenbuf <= 0)
                     return -1;
-                }
             }
             return inbuf[ptrbuf++];
         }

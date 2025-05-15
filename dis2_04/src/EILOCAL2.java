@@ -1,72 +1,73 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EILOCAL2 {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
-
+    static long max;
+   
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
-        Vertex[] graph = readGraph();
+        Node[] graph = readGraph();
 
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
-            }
-        }
-        System.out.println(sb.toString());
+        max = 0;
+        
+        dfs(graph[0], 0);
+
+      
+        System.out.println(max);
     }
 
-    public static void dfs(Vertex v) {
-        v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+    static void dfs(Node n, long sum) {
+        n.visited = true;
+        max = Math.max(max,sum);
+
+        for (Edge e : n.edges) {
+            if (!e.endPoint.visited) {
+                dfs(e.endPoint, sum + e.weight);
             }
         }
     }
 
-    public static Vertex[] readGraph() {
+    static Node[] readGraph(){
         int n = sc.nextInt();
-        int m = sc.nextInt();
-
-        Vertex[] vertices = new Vertex[n];
+        Node[] nodes = new Node[n];
         for (int i = 0; i < n; i++) {
-            vertices[i] = new Vertex(i);
+            nodes[i] = new Node(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < n - 1; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
+            int weight = sc.nextInt();
 
-            vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+            nodes[u].edges.add(new Edge(nodes[v], weight));
+            nodes[v].edges.add(new Edge(nodes[u], weight));
         }
 
-        return vertices;
+        return nodes;
     }
 
-    public static class Vertex {
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+    static class Node {
+        int id;
+        boolean visited;
+        List<Edge> edges = new ArrayList<>();
 
-        public Vertex(int id) {
+        public Node(int id) {
             this.id = id;
         }
+    }
 
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
+    static class Edge {
+        long weight;
+        Node endPoint;
+
+        public Edge(Node n, long w) {
+            this.endPoint = n;
+            this.weight = w;
         }
-
     }
 
     static class InputReader {
@@ -152,16 +153,14 @@ public class EICONP1 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b))
-                ;
+            while ((b = readByte()) != -1 && isSpaceChar(b));
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -181,8 +180,7 @@ public class EICONP1 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();

@@ -1,35 +1,56 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIFBF2 {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
+
+    static int male;
+    static int female;
+    static List<Vertex> compList;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
         Vertex[] graph = readGraph();
 
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
+        for (int i = 1; i < graph.length; i++) {
+
+            if (!graph[i].visited) {
+                compList = new ArrayList<>();
+                male = 0;
+                female = 0;
+
+                dfs(graph[i]);
+
+                for (Vertex v : compList) {
+                    v.totalMales = male;
+                    v.totalFemales = female;
+                }
             }
         }
-        System.out.println(sb.toString());
+
+        for (int i = 1; i < graph.length; i++) {
+            sb.append(i + " " + graph[i].totalMales + " " + graph[i].totalFemales).append("\n");
+        }
+        
+        System.out.print(sb);
     }
 
     public static void dfs(Vertex v) {
         v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        compList.add(v);
+
+        if (v.gender.equalsIgnoreCase("Nam")) {
+            male++;
+        } else {
+            female++;
+        }
+
+        for (Vertex vertex : v.adjList) {
+            if (!vertex.visited) {
+                dfs(vertex);
             }
         }
     }
@@ -38,9 +59,9 @@ public class EICONP1 {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
-            vertices[i] = new Vertex(i);
+        Vertex[] vertices = new Vertex[n + 1];
+        for (int i = 1; i <= n; i++) {
+            vertices[i] = new Vertex(i, sc.next());
         }
 
         for (int i = 0; i < m; i++) {
@@ -56,17 +77,20 @@ public class EICONP1 {
 
     public static class Vertex {
         public int id;
+        public String gender;
         public boolean visited;
+        public int totalMales, totalFemales;
+
         public List<Vertex> adjList = new ArrayList<>();
 
-        public Vertex(int id) {
+        public Vertex(int id, String gender) {
             this.id = id;
+            this.gender = gender;
         }
 
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
+        public void addAdjList(Vertex vertex) {
+            adjList.add(vertex);
         }
-
     }
 
     static class InputReader {

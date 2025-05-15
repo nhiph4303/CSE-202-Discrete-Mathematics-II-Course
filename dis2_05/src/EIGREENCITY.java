@@ -1,54 +1,62 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIGREENCITY {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
-        Vertex[] graph = readGraph();
-
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
-            }
-        }
-        System.out.println(sb.toString());
-    }
-
-    public static void dfs(Vertex v) {
-        v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
-            }
-        }
-    }
-
-    public static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
+        Vertex[] graph = readGraph(n);
+
+        dfs(graph[m]);
+
+        for (Vertex v : graph) {
+            sb.append(v.id + " " + v.trees + "\n");
+        }
+
+        System.out.println(sb);
+    }
+
+    public static void dfs(Vertex v) {
+        v.visited = true; 
+
+        for (Vertex w : v.adjList) {
+            if (!w.visited) {
+                dfs(w);
+                v.trees += w.trees;  
+            }
+        }
+    }
+
+    public static Vertex[] readGraph(int n) {
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < n - 1; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
-
             vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+        }
+
+        int count = 0;
+        for (Vertex v : vertices) {
+            if (v.adjList.size() == 0) {  
+                count++;
+            }
+        }
+
+        for (int i = 0; i < count; i++) {
+            int unit = sc.nextInt();
+            int tree = sc.nextInt();
+            vertices[unit].trees = tree;  
         }
 
         return vertices;
@@ -57,6 +65,7 @@ public class EICONP1 {
     public static class Vertex {
         public int id;
         public boolean visited;
+        public int trees;
         public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
@@ -64,9 +73,8 @@ public class EICONP1 {
         }
 
         public void addAdjList(Vertex v) {
-            adjList.add(v);
+            adjList.add(v);  
         }
-
     }
 
     static class InputReader {

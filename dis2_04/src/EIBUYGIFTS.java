@@ -1,81 +1,71 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIBUYGIFTS {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
         Vertex[] graph = readGraph();
-
         for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
-            }
+            sb.append(v.friendsNear + "\n");
         }
-        System.out.println(sb.toString());
+        System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
-        v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
-            }
-        }
-    }
-
-    public static Vertex[] readGraph() {
+    static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
+        int currentDate = sc.nextInt();
+        int kDays = sc.nextInt();
+
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
+            int birthdayInput = sc.nextInt();
+            vertices[i].birthday = birthdayInput;
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+            if (currentDate <= vertices[u].birthday) {
+                if (vertices[u].birthday - currentDate <= kDays) {
+                    vertices[v].friendsNear++;
+                }
+            }
+            if (currentDate <= vertices[v].birthday) {
+                if (vertices[v].birthday - currentDate <= kDays) {
+                    vertices[u].friendsNear++;
+                }
+            }
         }
 
         return vertices;
     }
 
-    public static class Vertex {
+    static class Vertex {
         public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        public int friendsNear;
+        public int birthday;
+        public List<Vertex> adjList = new ArrayList<Vertex>();
 
         public Vertex(int id) {
             this.id = id;
         }
-
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
-        }
-
     }
 
     static class InputReader {
-
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;
 
         public InputReader(InputStream stream) throws IOException {
+
             inbuf = new byte[2 << 23];
             lenbuf = 0;
             ptrbuf = 0;
@@ -113,7 +103,7 @@ public class EICONP1 {
             int b = skip();
             StringBuilder sb = new StringBuilder();
             while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                // != ' ')
+                                        // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
@@ -121,9 +111,8 @@ public class EICONP1 {
         }
 
         private int readByte() {
-            if (lenbuf == -1) {
+            if (lenbuf == -1)
                 throw new InputMismatchException();
-            }
             if (ptrbuf >= lenbuf) {
                 ptrbuf = 0;
                 try {
@@ -131,9 +120,8 @@ public class EICONP1 {
                 } catch (IOException e) {
                     throw new InputMismatchException();
                 }
-                if (lenbuf <= 0) {
+                if (lenbuf <= 0)
                     return -1;
-                }
             }
             return inbuf[ptrbuf++];
         }

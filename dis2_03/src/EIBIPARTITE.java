@@ -1,49 +1,68 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIBIPARTITE {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
+        int n = sc.nextInt();
 
-        Vertex[] graph = readGraph();
+        for (int i = 0; i < n; i++) {
+            Vertex[] graph = readGraph();
 
+            for (Vertex v : graph) {
+                if (!v.visited) {
+                    bfs(v);
+                }
+            }
+
+            sb.append(isBipartite(graph) ? "Yes\n" : "No\n");
+        }
+        System.out.print(sb);
+    }
+
+    static boolean isBipartite(Vertex[] graph) {
         for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
+            for (Vertex u : v.adjList) {
+                if (v.color == u.color) {
+                    return false;
+                }
             }
         }
-        System.out.println(sb.toString());
+        return true;
     }
 
-    public static void dfs(Vertex v) {
+    static void bfs(Vertex v) {
+        Queue<Vertex> q = new ArrayDeque<>();
+        q.add(v);
         v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+
+        while (!q.isEmpty()) {
+            Vertex w = q.poll();
+
+            for (Vertex x : w.adjList) {
+                if (!x.visited) {
+                    x.visited = true;
+                    x.color = 3 - w.color;
+                    q.add(x);
+                }
             }
         }
     }
 
-    public static Vertex[] readGraph() {
+    static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
@@ -54,19 +73,19 @@ public class EICONP1 {
         return vertices;
     }
 
-    public static class Vertex {
+    static class Vertex {
         public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        public boolean visited = false;
+        public int color = 1;
+        List<Vertex> adjList = new ArrayList<>();
 
-        public Vertex(int id) {
+        Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
+        void addAdjList(Vertex vertex) {
+            adjList.add(vertex);
         }
-
     }
 
     static class InputReader {

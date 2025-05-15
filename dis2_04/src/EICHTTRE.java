@@ -1,32 +1,40 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EICHTTRE {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
-        Vertex[] graph = readGraph();
+        int t = sc.nextInt();
+        for (int i = 0; i < t; i++) {
+            int n = sc.nextInt();
+            int m = sc.nextInt();
+            Vertex[] graph = readGraph(n, m);
 
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
+            int nComp = 0;
+            for (int j = 1; j < n; j++) {
+                if (!graph[j].visited) {
+                    dfs(graph[j]);
+                    nComp++;
+                }
+            }
+
+            if (nComp == 1 && m == n - 1) {
+                sb.append("YES\n");
+            } else {
+                sb.append("NO\n");
             }
         }
-        System.out.println(sb.toString());
+
+        System.out.println(sb);
     }
 
     public static void dfs(Vertex v) {
         v.visited = true;
-        vertexCount++;
         for (Vertex u : v.adjList) {
             if (!u.visited) {
                 dfs(u);
@@ -34,16 +42,14 @@ public class EICONP1 {
         }
     }
 
-    public static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-
+    public static Vertex[] readGraph(int n, int m) {
+        
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
@@ -55,6 +61,7 @@ public class EICONP1 {
     }
 
     public static class Vertex {
+
         public int id;
         public boolean visited;
         public List<Vertex> adjList = new ArrayList<>();
@@ -66,7 +73,6 @@ public class EICONP1 {
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
     static class InputReader {
@@ -152,16 +158,14 @@ public class EICONP1 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b))
-                ;
+            while ((b = readByte()) != -1 && isSpaceChar(b));
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -181,8 +185,7 @@ public class EICONP1 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();

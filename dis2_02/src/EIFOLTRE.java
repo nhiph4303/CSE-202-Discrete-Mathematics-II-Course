@@ -1,72 +1,77 @@
+
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIFOLTRE {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
+        HashMap<String, Vertex> vertices = readGraph();
 
-        Vertex[] graph = readGraph();
-
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
-            }
-        }
-        System.out.println(sb.toString());
+        dfs(vertices.get(sc.next()), 1);
+        System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
+    static void dfs(Vertex v, int nDashes) {
         v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        for (int i = 0; i < nDashes; ++i) {
+            sb.append("-");
+        }
+        sb.append(v.id + "\n");
+        for (int i = 0; i < v.adjList.size(); i++) {
+            if (v.adjList.get(i).visited == false) {
+                dfs(v.adjList.get(i), nDashes + 3);
             }
         }
     }
 
-    public static Vertex[] readGraph() {
+    static HashMap<String, Vertex> readGraph() {
         int n = sc.nextInt();
-        int m = sc.nextInt();
+        HashMap<String, Vertex> vertices = new HashMap<>();
 
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
-            vertices[i] = new Vertex(i);
+        for (int i = 1; i < n; ++i) {
+            String u = sc.next();
+            String v = sc.next();
+
+            Vertex vertexU = vertices.get(u);
+            if (vertexU == null) {
+                vertexU = new Vertex(u);
+                vertices.put(u, vertexU);
+            }
+
+            Vertex vertexV = vertices.get(v);
+            if (vertexV == null) {
+                vertexV = new Vertex(v);
+                vertices.put(v, vertexV);
+            }
+
+            vertexU.addAdjList(vertexV);
+            vertexV.addAdjList(vertexU);
         }
 
-        for (int i = 0; i < m; i++) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-
-            vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+        for (Vertex v : vertices.values()) {
+            Collections.sort(v.adjList, (v1, v2) -> v1.id.compareToIgnoreCase(v2.id));
         }
 
         return vertices;
     }
 
-    public static class Vertex {
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+    static class Vertex {
 
-        public Vertex(int id) {
+        String id;
+        boolean visited;
+        List<Vertex> adjList = new ArrayList<>();
+
+        public Vertex(String id) {
             this.id = id;
         }
 
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
     static class InputReader {

@@ -1,72 +1,72 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIMULEMA {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
         Vertex[] graph = readGraph();
 
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
+        for (int i = 0; i < graph.length; i++) {
+            if (!graph[i].visited) {
+                dfs(graph[i]);
             }
+            sb.append(i + " " + (int) graph[i].commision + "\n");
         }
-        System.out.println(sb.toString());
+        System.out.println(sb);
+
     }
 
     public static void dfs(Vertex v) {
         v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        v.commision = v.sale * 0.15;
+
+        for (Vertex w : v.adjList) {
+            if (!w.visited) {
+                dfs(w);
+                v.commision += Math.floor(w.commision / 2);
             }
         }
     }
 
     public static Vertex[] readGraph() {
         int n = sc.nextInt();
-        int m = sc.nextInt();
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
-            vertices[i] = new Vertex(i);
+        for (int i = 0; i < n; ++i) {
+            double sale = sc.nextDouble();
+            vertices[i] = new Vertex(i, sale);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < n - 1; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
     }
 
     public static class Vertex {
+        public double sale;
+        public double commision;
         public int id;
         public boolean visited;
+        public int level = 0;
         public List<Vertex> adjList = new ArrayList<>();
 
-        public Vertex(int id) {
+        public Vertex(int id, double sale) {
             this.id = id;
+            this.sale = sale;
         }
 
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
     static class InputReader {

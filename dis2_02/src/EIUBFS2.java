@@ -1,35 +1,34 @@
+
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIUBFS2 {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
         Vertex[] graph = readGraph();
+        bfs(graph[0]);
+        System.out.println(sb);
 
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
-            }
-        }
-        System.out.println(sb.toString());
     }
 
-    public static void dfs(Vertex v) {
+    public static void bfs(Vertex v) {
+        Queue<Vertex> q = new ArrayDeque<>();
         v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        q.add(v);
+
+        while (!q.isEmpty()) {
+            Vertex x = q.poll();
+            sb.append(x.id + " ");
+
+            for (Vertex w : x.adjList) {
+                if (!w.visited) {
+                    w.visited = true;
+                    q.add(w);
+                }
             }
         }
     }
@@ -51,10 +50,14 @@ public class EICONP1 {
             vertices[v].addAdjList(vertices[u]);
         }
 
+        for (Vertex x : vertices) {
+            x.adjList.sort((v1, v2) -> v1.id - v2.id);
+        }
         return vertices;
     }
 
     public static class Vertex {
+
         public int id;
         public boolean visited;
         public List<Vertex> adjList = new ArrayList<>();
@@ -65,8 +68,8 @@ public class EICONP1 {
 
         public void addAdjList(Vertex v) {
             adjList.add(v);
-        }
 
+        }
     }
 
     static class InputReader {
@@ -152,16 +155,14 @@ public class EICONP1 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b))
-                ;
+            while ((b = readByte()) != -1 && isSpaceChar(b));
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -181,8 +182,7 @@ public class EICONP1 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();

@@ -1,72 +1,90 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EITRGROUP {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
         Vertex[] graph = readGraph();
+        Vertex root = null;
 
         for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
+            if (v.parent == null) {
+                root = v;
+                break;
             }
         }
-        System.out.println(sb.toString());
+
+        bfs(root);
+
+        int maxLevel = -1;
+        for (Vertex v : graph) {
+            if (v != null && v.level > maxLevel) {
+                maxLevel = v.level;
+            }
+        }
+        sb.append(maxLevel + 1);
+        System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
+    static void bfs(Vertex v) {
+        Queue<Vertex> q = new ArrayDeque<>();
+        q.add(v);
         v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        v.level = 0;
+
+        while (!q.isEmpty()) {
+            Vertex w = q.poll();
+
+            for (Vertex x : w.adjList) {
+                if (!x.visited) {
+                    x.visited = true;
+                    x.level = w.level + 1;
+                    q.add(x);
+                }
             }
         }
     }
 
-    public static Vertex[] readGraph() {
+    static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+
+            vertices[v].parent = vertices[u];
         }
 
         return vertices;
     }
 
-    public static class Vertex {
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+    static class Vertex {
+        int id;
+        boolean visited = false;
+        Vertex parent = null;
+        int level = 0;
+        List<Vertex> adjList = new ArrayList<>();
 
-        public Vertex(int id) {
+        Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjList(Vertex v) {
+        void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
     static class InputReader {
@@ -152,16 +170,14 @@ public class EICONP1 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b))
-                ;
+            while ((b = readByte()) != -1 && isSpaceChar(b));
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -181,8 +197,7 @@ public class EICONP1 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();

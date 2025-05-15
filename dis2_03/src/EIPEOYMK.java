@@ -1,35 +1,62 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIPEOYMK {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
         Vertex[] graph = readGraph();
+        int root = sc.nextInt();
+
+        bfs(graph[root]);
+
+        Map<Integer, List<Integer>> levelMap = new HashMap<>();
 
         for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
+            if (v.level != -1) {
+                if (!levelMap.containsKey(v.level)) {
+                    levelMap.put(v.level, new ArrayList<>());
+                }
+                levelMap.get(v.level).add(v.id);
             }
         }
-        System.out.println(sb.toString());
+
+        int q = sc.nextInt();
+        for (int i = 0; i < q; i++) {
+            int k = sc.nextInt();
+
+            List<Integer> friendList = levelMap.get(k);
+            if (friendList == null || friendList.isEmpty()) {
+                sb.append("-1\n");
+            } else {
+                for (int id : friendList) {
+                    sb.append(id + " ");
+                }
+                sb.append("\n");
+            }
+        }
+
+        System.out.print(sb);
     }
 
-    public static void dfs(Vertex v) {
+    public static void bfs(Vertex v) {
+        Queue<Vertex> q = new ArrayDeque<>();
+        q.add(v);
         v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        v.level = 0;
+
+        while (!q.isEmpty()) {
+            Vertex w = q.poll();
+
+            for (Vertex x : w.adjList) {
+                if (!x.visited) {
+                    x.visited = true;
+                    x.level = w.level + 1;
+                    q.add(x);
+                }
             }
         }
     }
@@ -39,11 +66,11 @@ public class EICONP1 {
         int m = sc.nextInt();
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
@@ -51,12 +78,17 @@ public class EICONP1 {
             vertices[v].addAdjList(vertices[u]);
         }
 
+        for (Vertex v : vertices) {
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
+        }
+
         return vertices;
     }
 
     public static class Vertex {
         public int id;
-        public boolean visited;
+        public boolean visited = false;
+        public int level = -1;
         public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
@@ -66,7 +98,6 @@ public class EICONP1 {
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
     static class InputReader {

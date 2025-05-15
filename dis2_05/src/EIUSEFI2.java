@@ -1,81 +1,95 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
+public class EIUSEFI2 {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
-        Vertex[] graph = readGraph();
-
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
-            }
+        HashMap<String, Vertex> map = readGraph();
+        for (Map.Entry<String, Vertex> entry : map.entrySet()) {
+            entry.getValue().adjList.sort((v1, v2) -> {
+                return v1.name.compareToIgnoreCase(v2.name);
+            });
         }
-        System.out.println(sb.toString());
+
+        String source = sc.next();
+        String searchedWords = sc.next();
+        dfs(map.get(source), searchedWords);
+
+        System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
+    public static void dfs(Vertex v, String searchedWords) {
         v.visited = true;
-        vertexCount++;
+        boolean check = false;
+
         for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+            if (u.visited == false) {
+                check = true;
+                dfs(u, searchedWords);
+                v.paths += u.paths;
             }
         }
+        if (!check && v.name.contains(searchedWords)) {
+            v.paths++;
+        }
+        if (check && v.paths != 0) {
+            sb.append(v.name + " " + v.paths + "\n");
+        }
+
     }
 
-    public static Vertex[] readGraph() {
+    public static HashMap<String, Vertex> readGraph() {
         int n = sc.nextInt();
-        int m = sc.nextInt();
+        int m = n - 1;
 
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
-            vertices[i] = new Vertex(i);
-        }
-
+        HashMap<String, Vertex> map = new HashMap<>();
         for (int i = 0; i < m; i++) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
+            String u = sc.next();
+            String v = sc.next();
 
-            vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+            if (map.get(u) == null) {
+                Vertex vA = new Vertex(u);
+                map.put(u, vA);
+            }
+
+            if (map.get(v) == null) {
+                Vertex vB = new Vertex(v);
+                map.put(v, vB);
+            }
+            map.get(u).addAdjList(map.get(v));
+            map.get(v).addAdjList(map.get(u));
         }
 
-        return vertices;
+        return map;
     }
 
     public static class Vertex {
-        public int id;
+        public String name;
         public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        public List<Vertex> adjList = new ArrayList<Vertex>();
+        public int paths;
 
-        public Vertex(int id) {
-            this.id = id;
+        public Vertex(String name) {
+            this.name = name;
         }
 
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
-    static class InputReader {
-
+    public static class InputReader {
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;
 
         public InputReader(InputStream stream) throws IOException {
+
             inbuf = new byte[2 << 23];
             lenbuf = 0;
             ptrbuf = 0;
@@ -113,7 +127,7 @@ public class EICONP1 {
             int b = skip();
             StringBuilder sb = new StringBuilder();
             while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                // != ' ')
+                                        // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
@@ -121,9 +135,8 @@ public class EICONP1 {
         }
 
         private int readByte() {
-            if (lenbuf == -1) {
+            if (lenbuf == -1)
                 throw new InputMismatchException();
-            }
             if (ptrbuf >= lenbuf) {
                 ptrbuf = 0;
                 try {
@@ -131,9 +144,8 @@ public class EICONP1 {
                 } catch (IOException e) {
                     throw new InputMismatchException();
                 }
-                if (lenbuf <= 0) {
+                if (lenbuf <= 0)
                     return -1;
-                }
             }
             return inbuf[ptrbuf++];
         }

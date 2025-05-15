@@ -1,6 +1,6 @@
 {
     "java.format.settings.url": "eclipse-formatter.xml",
     "[java]": {
-        "editor.defaultFormatter": "redhat.java"
+        "editor.defaultFormatter": "Oracle.oracle-java"
     }
 }

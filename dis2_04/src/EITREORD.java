@@ -1,72 +1,82 @@
 import java.io.*;
 import java.util.*;
 
-public class EICONP1 {
-
+public class EITREORD {
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
-    static int vertexCount;
-    static int minVertex;
-
+    static int preIndex = 0;
+    static Map<Integer, Integer> inOrderMap = new HashMap<>();
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
+        int nNode = sc.nextInt();
 
-        Vertex[] graph = readGraph();
-
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                minVertex = v.id;
-                vertexCount = 0;
-                dfs(v);
-                sb.append(minVertex +" " + vertexCount+"\n");
-            }
+        if (nNode == 0) {
+            System.out.println("");
+            return;
         }
-        System.out.println(sb.toString());
+
+        int[] preOrder = new int[nNode];
+        int[] inOrder = new int[nNode];
+
+        for (int i = 0; i < nNode; i++) {
+            preOrder[i] = sc.nextInt();
+        }
+        for (int i = 0; i < nNode; i++) {
+            inOrder[i] = sc.nextInt();
+        }
+
+        for (int i = 0; i < nNode; i++) {
+            inOrderMap.put(inOrder[i], i);
+        }
+
+        Node root = buildTree(preOrder, 0, nNode - 1);
+
+        List<Node> list = new ArrayList<>();
+        printPostOrder(root, list);
+
+        for (Node v : list) {
+            sb.append(v.id).append(" ");
+        }
+        System.out.println(sb.toString().trim());
     }
 
-    public static void dfs(Vertex v) {
-        v.visited = true;
-        vertexCount++;
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
-            }
+    public static Node buildTree(int[] preOrder, int inStart, int inEnd) {
+        if (inStart > inEnd) {
+            return null;
         }
+
+        int rootVal = preOrder[preIndex++];
+        Node root = new Node(rootVal);
+
+        int inIndex = inOrderMap.get(rootVal);
+
+        root.left = buildTree(preOrder, inStart, inIndex - 1);
+        root.right = buildTree(preOrder, inIndex + 1, inEnd);
+
+        return root;
     }
 
-    public static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
-            vertices[i] = new Vertex(i);
+    public static void printPostOrder(Node v, List<Node> list) {
+        if (v == null) {
+            return;
         }
-
-        for (int i = 0; i < m; i++) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-
-            vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
+        if (v.left != null) {
+            printPostOrder(v.left, list);
         }
-
-        return vertices;
+        if (v.right != null) {
+            printPostOrder(v.right, list);
+        }
+        list.add(v);
     }
 
-    public static class Vertex {
+    public static class Node {
         public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        public Node left;
+        public Node right;
 
-        public Vertex(int id) {
+        public Node(int id) {
             this.id = id;
         }
-
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
-        }
-
     }
 
     static class InputReader {

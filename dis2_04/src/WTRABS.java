@@ -23,7 +23,7 @@ public class WTRABS {
     public static void dfs(Vertex v) {
         v.visited = true;
 
-        if (v.adjList.size() > 0) {
+        if (!v.adjList.isEmpty()) {
             double transferedWater = v.water / v.adjList.size();
 
             for (Vertex w : v.adjList) {
@@ -60,7 +60,7 @@ public class WTRABS {
     public static class Vertex {
         public int id;
         public boolean visited;
-        public List<Vertex> adjList = new ArrayList<Vertex>();
+        public List<Vertex> adjList = new ArrayList<>();
         public double water;
 
         public Vertex(int id) {

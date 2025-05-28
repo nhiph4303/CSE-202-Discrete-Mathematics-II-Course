@@ -23,7 +23,7 @@ public class EITRGROUPdfs {
 
         int maxLevel = -1;
         for (Vertex v : graph) {
-            if (v != null && v.level > maxLevel) {
+            if (v.level > maxLevel) {
                 maxLevel = v.level;
             }
         }

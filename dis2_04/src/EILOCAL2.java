@@ -9,14 +9,9 @@ public class EILOCAL2 {
    
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
-
         Node[] graph = readGraph();
-
         max = 0;
-        
         dfs(graph[0], 0);
-
-      
         System.out.println(max);
     }
 

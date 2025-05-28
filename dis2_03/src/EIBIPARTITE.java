@@ -52,6 +52,16 @@ public class EIBIPARTITE {
             }
         }
     }
+    // static void dfs(Vertex v) {
+    //     v.visited = true;
+
+    //     for (Vertex w : v.adjList) {
+    //         if (!w.visited) {
+    //             w.color = 3 - v.color;
+    //             dfs(w); 
+    //         }
+    //     }
+    // }
 
     static Vertex[] readGraph() {
         int n = sc.nextInt();

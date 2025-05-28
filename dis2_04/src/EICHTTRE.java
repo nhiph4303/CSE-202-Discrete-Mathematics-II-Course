@@ -43,7 +43,6 @@ public class EICHTTRE {
     }
 
     public static Vertex[] readGraph(int n, int m) {
-        
         Vertex[] vertices = new Vertex[n];
         for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
@@ -61,7 +60,6 @@ public class EICHTTRE {
     }
 
     public static class Vertex {
-
         public int id;
         public boolean visited;
         public List<Vertex> adjList = new ArrayList<>();

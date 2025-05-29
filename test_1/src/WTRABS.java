@@ -1,9 +1,9 @@
+package dis2_04;
 
 import java.io.*;
 import java.util.*;
 
-public class EIUDFS1 {
-
+public class WTRABS {
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
@@ -12,57 +12,66 @@ public class EIUDFS1 {
 
         Vertex[] graph = readGraph();
         dfs(graph[0]);
+
+        for (Vertex v : graph) {
+
+            if (v.water != 0) {
+                sb.append(v.id + " " + v.water + "\n");
+            }
+        }
         System.out.println(sb);
     }
 
     public static void dfs(Vertex v) {
         v.visited = true;
-        sb.append(v.id + " ");
 
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        if (v.adjList.size() > 0) {
+            double transferedWater = v.water / v.adjList.size();
+
+            for (Vertex w : v.adjList) {
+
+                if (w.visited == false) {
+                    w.water += transferedWater;
+                    dfs(w);
+                }
             }
+            v.water = 0;
         }
     }
 
     public static Vertex[] readGraph() {
         int n = sc.nextInt();
-        int m = sc.nextInt();
+        int m = n - 1;
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
+            double waterAmount = sc.nextDouble();
+            vertices[i].water = waterAmount;
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
-
-        for (Vertex v : vertices) {
-            v.adjList.sort((v1, v2) -> v1.id - v2.id);
-        }
-
         return vertices;
     }
 
     public static class Vertex {
-
         public int id;
         public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        public List<Vertex> adjList = new ArrayList<Vertex>();
+        public double water;
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
+        public void addAdjList(Vertex vertex) {
+            adjList.add(vertex);
         }
-
     }
 
     static class InputReader {

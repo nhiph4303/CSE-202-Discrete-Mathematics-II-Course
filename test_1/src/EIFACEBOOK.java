@@ -43,7 +43,6 @@ public class EIFACEBOOK {
     }
 
     static class Vertex {
-
         public String gender;
         public List<Vertex> adjList = new ArrayList<>();
 

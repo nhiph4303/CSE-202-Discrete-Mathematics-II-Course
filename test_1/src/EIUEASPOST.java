@@ -1,68 +1,69 @@
+package dis2_04;
 
 import java.io.*;
 import java.util.*;
 
-public class EIUDFS1 {
-
+public class EIUEASPOST {
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
+        int nNode = sc.nextInt();
 
-        Vertex[] graph = readGraph();
-        dfs(graph[0]);
-        System.out.println(sb);
+        if (nNode == 0) {
+            System.out.println("");
+            return;
+        }
+
+        Node[] nodes = readTree(nNode);
+        List<Node> list = new ArrayList<>();
+        printPostOrder(nodes[0], list);
+
+        for (Node v : list) {
+            sb.append(v.id).append(" ");
+        }
+        System.out.println(sb.toString().trim());
     }
 
-    public static void dfs(Vertex v) {
-        v.visited = true;
-        sb.append(v.id + " ");
+    public static void printPostOrder(Node v, List<Node> list) {
+        if (v.left != null) {
+            printPostOrder(v.left, list);
+        }
+        if (v.right != null) {
+            printPostOrder(v.right, list);
+        }
+        list.add(v);
+    }
 
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+    public static Node[] readTree(int nNode) {
+        Node[] nodes = new Node[nNode];
+        for (int i = 0; i < nNode; i++) {
+            nodes[i] = new Node(i + 1);
+        }
+
+        for (int i = 0; i < nNode; i++) {
+            int leftIndex = sc.nextInt();
+            if (leftIndex > 0 && leftIndex <= nNode) {
+                nodes[i].left = nodes[leftIndex - 1];
+            }
+            int rightIndex = sc.nextInt();
+            if (rightIndex > 0 && rightIndex <= nNode) {
+                nodes[i].right = nodes[rightIndex - 1];
             }
         }
+
+        return nodes;
     }
 
-    public static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
-            vertices[i] = new Vertex(i);
-        }
-
-        for (int i = 0; i < m; i++) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-
-            vertices[u].addAdjList(vertices[v]);
-        }
-
-        for (Vertex v : vertices) {
-            v.adjList.sort((v1, v2) -> v1.id - v2.id);
-        }
-
-        return vertices;
-    }
-
-    public static class Vertex {
-
+    public static class Node {
         public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        public Node left;
+        public Node right;
 
-        public Vertex(int id) {
+        public Node(int id) {
             this.id = id;
         }
-
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
-        }
-
     }
 
     static class InputReader {

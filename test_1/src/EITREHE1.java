@@ -1,8 +1,9 @@
+package dis2_04;
 
 import java.io.*;
 import java.util.*;
 
-public class EIUDFS1 {
+public class EITREHE1 {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
@@ -11,58 +12,63 @@ public class EIUDFS1 {
         sc = new InputReader(System.in);
 
         Vertex[] graph = readGraph();
-        dfs(graph[0]);
+        Vertex root = graph[0];
+
+        dfs(root);
+
+        int maxLevel = -1;
+        for (Vertex v : graph) {
+            if (v != null && v.level > maxLevel) {
+                maxLevel = v.level;
+            }
+        }
+        sb.append(maxLevel);
         System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
+    static void dfs(Vertex v) {
         v.visited = true;
-        sb.append(v.id + " ");
 
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                dfs(u);
+        for (Vertex w : v.adjList) {
+            if (!w.visited) {
+                w.level = v.level + 1;
+                dfs(w); 
             }
         }
     }
 
-    public static Vertex[] readGraph() {
+    static Vertex[] readGraph() {
         int n = sc.nextInt();
-        int m = sc.nextInt();
-
+        
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < n - 1; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
-        }
-
-        for (Vertex v : vertices) {
-            v.adjList.sort((v1, v2) -> v1.id - v2.id);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
     }
 
-    public static class Vertex {
+    static class Vertex {
+        int id;
+        boolean visited = false;
+        int level = 0;
+        List<Vertex> adjList = new ArrayList<>();
 
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
-
-        public Vertex(int id) {
+        Vertex(int id) {
             this.id = id;
         }
 
-        public void addAdjList(Vertex v) {
+        void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
     static class InputReader {
@@ -148,16 +154,14 @@ public class EIUDFS1 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b))
-                ;
+            while ((b = readByte()) != -1 && isSpaceChar(b));
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -177,8 +181,7 @@ public class EIUDFS1 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();

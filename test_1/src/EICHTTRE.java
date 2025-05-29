@@ -1,8 +1,9 @@
+package dis2_04;
 
 import java.io.*;
 import java.util.*;
 
-public class EIUDFS1 {
+public class EICHTTRE {
 
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
@@ -10,15 +11,32 @@ public class EIUDFS1 {
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
 
-        Vertex[] graph = readGraph();
-        dfs(graph[0]);
+        int t = sc.nextInt();
+        for (int i = 0; i < t; i++) {
+            int n = sc.nextInt();
+            int m = sc.nextInt();
+            Vertex[] graph = readGraph(n, m);
+
+            int nComp = 0;
+            for (int j = 1; j < n; j++) {
+                if (!graph[j].visited) {
+                    dfs(graph[j]);
+                    nComp++;
+                }
+            }
+
+            if (nComp == 1 && m == n - 1) {
+                sb.append("YES\n");
+            } else {
+                sb.append("NO\n");
+            }
+        }
+
         System.out.println(sb);
     }
 
     public static void dfs(Vertex v) {
         v.visited = true;
-        sb.append(v.id + " ");
-
         for (Vertex u : v.adjList) {
             if (!u.visited) {
                 dfs(u);
@@ -26,24 +44,19 @@ public class EIUDFS1 {
         }
     }
 
-    public static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-
+    public static Vertex[] readGraph(int n, int m) {
+        
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
-        }
-
-        for (Vertex v : vertices) {
-            v.adjList.sort((v1, v2) -> v1.id - v2.id);
+            vertices[v].addAdjList(vertices[u]);
         }
 
         return vertices;
@@ -62,7 +75,6 @@ public class EIUDFS1 {
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
     static class InputReader {
@@ -148,16 +160,14 @@ public class EIUDFS1 {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b))
-                ;
+            while ((b = readByte()) != -1 && isSpaceChar(b));
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -177,8 +187,7 @@ public class EIUDFS1 {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
-                ;
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
             if (b == '-') {
                 minus = true;
                 b = readByte();

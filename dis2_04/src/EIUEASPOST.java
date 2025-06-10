@@ -1,7 +1,9 @@
+
 import java.io.*;
 import java.util.*;
 
 public class EIUEASPOST {
+
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
@@ -55,13 +57,14 @@ public class EIUEASPOST {
     }
 
     public static class Node {
-        public int id;
-        public Node left;
-        public Node right;
+        int id;
+        Node left;
+        Node right;
 
         public Node(int id) {
             this.id = id;
         }
+
     }
 
     static class InputReader {

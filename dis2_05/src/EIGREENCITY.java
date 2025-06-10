@@ -25,10 +25,10 @@ public class EIGREENCITY {
     public static void dfs(Vertex v) {
         v.visited = true; 
 
-        for (Vertex w : v.adjList) {
-            if (!w.visited) {
-                dfs(w);
-                v.trees += w.trees;  
+        for (Vertex u : v.adjList) {
+            if (!u.visited) {
+                dfs(u);
+                v.trees += u.trees;  
             }
         }
     }

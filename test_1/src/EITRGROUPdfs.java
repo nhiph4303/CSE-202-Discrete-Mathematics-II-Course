@@ -1,5 +1,3 @@
-package dis2_03;
-
 import java.io.*;
 import java.util.*;
 

@@ -1,23 +1,22 @@
 
 import java.util.*;
 
-public class EICONP3 {
+public class EICONP1 {
 
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
     static int minVertex;
-    static int vertexCount;
-    static int edgeCount;
+    static int countVertex;
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
+
         for (Vertex v : graph) {
             if (!v.visited) {
-                edgeCount = 0;
-                vertexCount = 0;
                 minVertex = v.id;
+                countVertex = 0;
                 dfs(v);
-                sb.append(minVertex + " " + vertexCount + " " + edgeCount/2 + "\n");
+                sb.append(minVertex + " " + countVertex + "\n");
             }
         }
         System.out.println(sb);
@@ -25,9 +24,8 @@ public class EICONP3 {
 
     public static void dfs(Vertex v) {
         v.visited = true;
-        vertexCount++;
+        countVertex++;
         for (Vertex u : v.adjList) {
-            edgeCount++;
             if (!u.visited) {
                 dfs(u);
             }

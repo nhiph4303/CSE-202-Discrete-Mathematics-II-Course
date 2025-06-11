@@ -1,26 +1,34 @@
 
 import java.util.*;
 
-public class EIUDEG {
+public class EIUSUFBF {
 
     static StringBuilder sb = new StringBuilder();
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Vertex[] graph = readGraph();
-        for (int i = 0; i < graph.length; i++) {
-            sb.append(graph[i].adjList.size() + " ");
-        }
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int l = sc.nextInt();
 
+        Vertex[] graph = readGraph(n, m);
+        for (int i = 0; i < n; i++) {
+            sb.append(graph[i].id + " ");
+
+            for (Vertex v : graph[i].adjList) {
+                if (v.adjList.size() < l) {
+                    sb.append(v.id + " ");
+                }
+            }
+
+            sb.append("\n");
+        }
         System.out.println(sb);
     }
 
-    static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-
-        Vertex[] vertices = new Vertex[n + 1];
-        for (int i = 1; i <= n; i++) {
+    static Vertex[] readGraph(int n, int m) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
@@ -31,10 +39,16 @@ public class EIUDEG {
             vertices[u].addAdjList(vertices[v]);
             vertices[v].addAdjList(vertices[u]);
         }
+
+        for (Vertex v : vertices) {
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
+        }
+
         return vertices;
     }
 
     static class Vertex {
+
         public int id;
         public List<Vertex> adjList = new ArrayList<>();
 
@@ -45,7 +59,6 @@ public class EIUDEG {
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
 
 }

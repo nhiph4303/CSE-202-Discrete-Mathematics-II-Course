@@ -1,26 +1,39 @@
 
 import java.util.*;
 
-public class EIUDEG {
+public class EICONP {
 
-    static StringBuilder sb = new StringBuilder();
     static Scanner sc = new Scanner(System.in);
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
-        for (int i = 0; i < graph.length; i++) {
-            sb.append(graph[i].adjList.size() + " ");
+        int count = 0;
+        for (Vertex v : graph) {
+            if(!v.visited){
+                dfs(v);
+                count++;
+            }
         }
-
-        System.out.println(sb);
+        System.out.println(count);
     }
 
-    static Vertex[] readGraph() {
+    public static void dfs(Vertex v) {
+        v.visited = true;
+
+        for (Vertex u : v.adjList) {
+            if (!u.visited) {
+                dfs(u);
+            }
+        }
+    }
+
+    public static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
-        Vertex[] vertices = new Vertex[n + 1];
-        for (int i = 1; i <= n; i++) {
+        Vertex[] vertices = new Vertex[n];
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
@@ -31,12 +44,15 @@ public class EIUDEG {
             vertices[u].addAdjList(vertices[v]);
             vertices[v].addAdjList(vertices[u]);
         }
+
         return vertices;
     }
 
-    static class Vertex {
-        public int id;
-        public List<Vertex> adjList = new ArrayList<>();
+    public static class Vertex {
+
+        int id;
+        boolean visited;
+        List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
@@ -45,7 +61,5 @@ public class EIUDEG {
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
-
     }
-
 }

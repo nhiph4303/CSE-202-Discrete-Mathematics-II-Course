@@ -1,33 +1,22 @@
 
 import java.util.*;
 
-public class EICONP3 {
+public class EIUDFS1 {
 
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
-    static int minVertex;
-    static int vertexCount;
-    static int edgeCount;
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
-        for (Vertex v : graph) {
-            if (!v.visited) {
-                edgeCount = 0;
-                vertexCount = 0;
-                minVertex = v.id;
-                dfs(v);
-                sb.append(minVertex + " " + vertexCount + " " + edgeCount/2 + "\n");
-            }
-        }
+        dfs(graph[0]);
         System.out.println(sb);
     }
 
     public static void dfs(Vertex v) {
         v.visited = true;
-        vertexCount++;
+        sb.append(v.id + " ");
+
         for (Vertex u : v.adjList) {
-            edgeCount++;
             if (!u.visited) {
                 dfs(u);
             }
@@ -48,9 +37,11 @@ public class EICONP3 {
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
         }
 
+        for (Vertex v : vertices) {
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
+        }
         return vertices;
     }
 

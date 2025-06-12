@@ -1,30 +1,24 @@
 
 import java.util.*;
 
-public class EICHTTRE {
+public class EICONP3 {
 
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
+    static int minVertex;
+    static int countVertex;
+    static int countEdge;
 
     public static void main(String[] args) {
-        int t = sc.nextInt();
-        for (int i = 0; i < t; i++) {
-            int n = sc.nextInt();
-            int m = sc.nextInt();
-            Vertex[] graph = readGraph(n, m);
+        Vertex[] graph = readGraph();
 
-            int nComp = 0;
-            for (int j = 1; j < n; j++) {
-                if (!graph[j].visited) {
-                    dfs(graph[j]);
-                    nComp++;
-                }
-            }
-
-            if (nComp == 1 && m == n - 1) {
-                sb.append("YES\n");
-            } else {
-                sb.append("NO\n");
+        for (Vertex v : graph) {
+            if (!v.visited) {
+                minVertex = v.id;
+                countVertex = 0;
+                countEdge = 0;
+                dfs(v);
+                sb.append(v.id + " " + countVertex + " " + countEdge / 2 + "\n");
             }
         }
 
@@ -33,20 +27,26 @@ public class EICHTTRE {
 
     public static void dfs(Vertex v) {
         v.visited = true;
+        countVertex++;
+
         for (Vertex u : v.adjList) {
+            countEdge++;
             if (!u.visited) {
                 dfs(u);
             }
         }
     }
 
-    public static Vertex[] readGraph(int n, int m) {
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; ++i) {
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
@@ -59,9 +59,9 @@ public class EICHTTRE {
 
     public static class Vertex {
 
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        int id;
+        boolean visited;
+        List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;

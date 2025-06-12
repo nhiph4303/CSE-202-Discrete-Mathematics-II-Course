@@ -1,91 +1,62 @@
 import java.io.*;
 import java.util.*;
 
-public class EITRGROUPdfs {
-
+ class EIBIRTHDAY {
     static InputReader sc;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         sc = new InputReader(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int d = sc.nextInt();
+        int k = sc.nextInt();
 
-        Vertex[] graph = readGraph();
-        Vertex root = null;
-
-        for (Vertex v : graph) {
-            if (v.parent == null) {
-                root = v;
-                break;
-            }
+        Node[] nodes = new Node[n];
+        for (int i = 0; i < n; i++) {
+            nodes[i] = new Node(i, sc.nextInt());
         }
-
-        dfs(root);
-
-        int maxLevel = -1;
-        for (Vertex v : graph) {
-            if (v != null && v.level > maxLevel) {
-                maxLevel = v.level;
-            }
+        for (int i = 0; i < m; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            nodes[u].adjacentNodes.add(nodes[v]);
+            nodes[v].adjacentNodes.add(nodes[u]);
         }
-        sb.append(maxLevel + 1);
+        
+        for (Node node : nodes) {
+            int count = 0;
+            for (Node adj : node.adjacentNodes) {
+                int date = (k + d) % 366;
+                if (adj.birthday >= d && adj.birthday <= d + k) {
+                    count++;
+                } else if (adj.birthday + k > 365 && adj.birthday <= date) {
+                    count++;
+                }
+            }
+            sb.append(count + " ");
+        }
         System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
-        v.visited = true;
+    static class Node {
+        int id;
+        int birthday;
+        List<Node> adjacentNodes = new ArrayList<>();
 
-        for (Vertex w : v.adjList) {
-            if (!w.visited) {
-                w.level = v.level + 1;
-                dfs(w); 
-            }
-        }
-    }
-
-    public static Vertex[] readGraph() {
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-
-        Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
-            vertices[i] = new Vertex(i);
-        }
-
-        for (int i = 0; i < m; ++i) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-
-            vertices[u].addAdjList(vertices[v]);
-
-            vertices[v].parent = vertices[u];
-        }
-
-        return vertices;
-    }
-
-    public static class Vertex {
-        public int id;
-        public boolean visited = false;
-        public Vertex parent = null;
-        public int level = 0;
-        public List<Vertex> adjList = new ArrayList<>();
-
-        public Vertex(int id) {
+        public Node(int id, int birthday) {
             this.id = id;
+            this.birthday = birthday;
         }
 
-        public void addAdjList(Vertex v) {
-            adjList.add(v);
-        }
     }
 
     static class InputReader {
-
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
         public InputStream is;
 
         public InputReader(InputStream stream) throws IOException {
+
             inbuf = new byte[2 << 23];
             lenbuf = 0;
             ptrbuf = 0;
@@ -123,7 +94,7 @@ public class EITRGROUPdfs {
             int b = skip();
             StringBuilder sb = new StringBuilder();
             while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                // != ' ')
+                                        // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
@@ -131,9 +102,8 @@ public class EITRGROUPdfs {
         }
 
         private int readByte() {
-            if (lenbuf == -1) {
+            if (lenbuf == -1)
                 throw new InputMismatchException();
-            }
             if (ptrbuf >= lenbuf) {
                 ptrbuf = 0;
                 try {
@@ -141,9 +111,8 @@ public class EITRGROUPdfs {
                 } catch (IOException e) {
                     throw new InputMismatchException();
                 }
-                if (lenbuf <= 0) {
+                if (lenbuf <= 0)
                     return -1;
-                }
             }
             return inbuf[ptrbuf++];
         }
@@ -162,14 +131,16 @@ public class EITRGROUPdfs {
 
         private int skip() {
             int b;
-            while ((b = readByte()) != -1 && isSpaceChar(b));
+            while ((b = readByte()) != -1 && isSpaceChar(b))
+                ;
             return b;
         }
 
         public int nextInt() {
             int num = 0, b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();
@@ -189,7 +160,8 @@ public class EITRGROUPdfs {
             long num = 0;
             int b;
             boolean minus = false;
-            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+            while ((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'))
+                ;
             if (b == '-') {
                 minus = true;
                 b = readByte();

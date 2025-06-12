@@ -1,40 +1,43 @@
+
 import java.util.*;
 
-public class EIFBF {
+public class EIFBF2 {
 
     static StringBuilder sb = new StringBuilder();
     static Scanner sc = new Scanner(System.in);
+
     static int male;
     static int female;
-    static int maxVertex;
+    static List<Vertex> compList;
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
-        List<int[]> results = new ArrayList<>();
 
         for (int i = 1; i < graph.length; i++) {
             if (!graph[i].visited) {
-                maxVertex = -1;
+                compList = new ArrayList<>();
                 male = 0;
                 female = 0;
+
                 dfs(graph[i]);
-                results.add(new int[]{maxVertex, male, female});
+
+                for (Vertex v : compList) {
+                    v.totalMales = male;
+                    v.totalFemales = female;
+                }
             }
         }
 
-        // Sorting based on the representative vertex
-        results.sort((a, b) -> a[0] - b[0]);
-
-        // Outputting results
-        for (int[] result : results) {
-            sb.append(result[0] + " " + result[1] + " " + result[2] + "\n");
+        for (int i = 1; i < graph.length; i++) {
+            sb.append(i + " " + graph[i].totalMales + " " + graph[i].totalFemales).append("\n");
         }
-        System.out.println(sb);
+
+        System.out.print(sb);
     }
 
-    static void dfs(Vertex v) {
+    public static void dfs(Vertex v) {
         v.visited = true;
-        maxVertex = Math.max(maxVertex, v.id);
+        compList.add(v);
 
         if (v.gender.equalsIgnoreCase("Nam")) {
             male++;
@@ -70,10 +73,11 @@ public class EIFBF {
     }
 
     static class Vertex {
-        int id;
-        boolean visited;
-        String gender;
-        List<Vertex> adjList = new ArrayList<>();
+        public int id;
+        public String gender;
+        public boolean visited;
+        public int totalMales, totalFemales;
+        public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id, String gender) {
             this.id = id;
@@ -84,4 +88,5 @@ public class EIFBF {
             adjList.add(v);
         }
     }
+
 }

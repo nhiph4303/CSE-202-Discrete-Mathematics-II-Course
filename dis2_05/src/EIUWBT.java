@@ -61,19 +61,19 @@ public class EIUWBT {
     }
 
     public static Vertex[] readGraph() {
-        int nVertices = sc.nextInt();
-        int nEdges = nVertices - 1;
+        int n = sc.nextInt();
+        int m = n - 1;
 
-        Vertex[] vertices = new Vertex[nVertices + 1];
+        Vertex[] vertices = new Vertex[n + 1];
 
-        for (int i = 1; i <= nVertices; ++i) {
+        for (int i = 1; i <= n; ++i) {
             vertices[i] = new Vertex(i);
             int weightInput = sc.nextInt();
             vertices[i].weight = weightInput;
             totalWeight += vertices[i].weight;
         }
 
-        for (int i = 0; i < nEdges; ++i) {
+        for (int i = 0; i < m; ++i) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 

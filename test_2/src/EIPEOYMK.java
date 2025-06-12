@@ -13,14 +13,11 @@ public class EIPEOYMK {
         bfs(graph[root]);
 
         Map<Integer, List<Integer>> levelMap = new HashMap<>();
-
         for (Vertex v : graph) {
-            if (v.level != -1) {
-                if (!levelMap.containsKey(v.level)) {
-                    levelMap.put(v.level, new ArrayList<>());
-                }
-                levelMap.get(v.level).add(v.id);
+            if (!levelMap.containsKey(v.level)) {
+                levelMap.put(v.level, new ArrayList<>());
             }
+            levelMap.get(v.level).add(v.id);
         }
 
         int q = sc.nextInt();
@@ -28,7 +25,8 @@ public class EIPEOYMK {
             int k = sc.nextInt();
 
             List<Integer> friendList = levelMap.get(k);
-            if (friendList == null || friendList.isEmpty()) {
+
+            if (friendList == null) {
                 sb.append("-1\n");
             } else {
                 for (int id : friendList) {
@@ -38,7 +36,7 @@ public class EIPEOYMK {
             }
         }
 
-        System.out.print(sb);
+        System.out.println(sb);
     }
 
     public static void bfs(Vertex v) {

@@ -87,7 +87,7 @@ public class EIPEOYMK {
 
     public static class Vertex {
         public int id;
-        public boolean visited = false;
+        public boolean visited;
         public int level = -1;
         public List<Vertex> adjList = new ArrayList<>();
 

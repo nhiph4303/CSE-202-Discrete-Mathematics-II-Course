@@ -1,46 +1,47 @@
 
 import java.util.*;
 
-public class EICHTTRE {
+public class EIPRF {
 
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
-        int t = sc.nextInt();
-        for (int i = 0; i < t; i++) {
-            int n = sc.nextInt();
-            int m = sc.nextInt();
-            Vertex[] graph = readGraph(n, m);
+        Vertex[] graph = readGraph();
+        List<Vertex> path = new ArrayList<>();
 
-            int nComp = 0;
-            for (int j = 1; j < n; j++) {
-                if (!graph[j].visited) {
-                    dfs(graph[j]);
-                    nComp++;
-                }
+        if (dfs(graph[0], path)) {
+            for (Vertex v : path) {
+                sb.append(v.id + " ");
             }
-
-            if (nComp == 1 && m == n - 1) {
-                sb.append("YES\n");
-            } else {
-                sb.append("NO\n");
-            }
+            System.out.println(sb);
         }
 
-        System.out.println(sb);
     }
 
-    public static void dfs(Vertex v) {
+    public static boolean dfs(Vertex v, List<Vertex> path) {
         v.visited = true;
+        path.add(v);
+
         for (Vertex u : v.adjList) {
             if (!u.visited) {
-                dfs(u);
+                u.visited = true;
+                if (dfs(u, path)) {
+                    return true;
+                }
+            } else if (u.id == 0) {
+                return true;
             }
         }
+
+        path.remove(path.size() - 1);
+        return false;
     }
 
-    public static Vertex[] readGraph(int n, int m) {
+    public static Vertex[] readGraph() {
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
         Vertex[] vertices = new Vertex[n];
         for (int i = 0; i < n; ++i) {
             vertices[i] = new Vertex(i);
@@ -51,9 +52,11 @@ public class EICHTTRE {
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
-            vertices[v].addAdjList(vertices[u]);
         }
 
+        for (Vertex v : vertices) {
+            v.adjList.sort((v1, v2) -> v1.id - v2.id);
+        }
         return vertices;
     }
 

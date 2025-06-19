@@ -14,6 +14,7 @@ public class EIPRF {
             for (Vertex v : path) {
                 sb.append(v.id + " ");
             }
+
             System.out.println(sb);
         }
 
@@ -25,7 +26,6 @@ public class EIPRF {
 
         for (Vertex u : v.adjList) {
             if (!u.visited) {
-                //u.visited = true;
                 if (dfs(u, path)) {
                     return true;
                 }
@@ -43,15 +43,16 @@ public class EIPRF {
         int m = sc.nextInt();
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; ++i) {
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
+            //vertices[v].addAdjList(vertices[u]);
         }
 
         for (Vertex v : vertices) {
@@ -62,9 +63,9 @@ public class EIPRF {
 
     public static class Vertex {
 
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        int id;
+        boolean visited;
+        List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;

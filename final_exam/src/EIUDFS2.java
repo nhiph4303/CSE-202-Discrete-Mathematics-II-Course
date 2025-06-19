@@ -1,41 +1,27 @@
 
 import java.util.*;
 
-public class EIPRF {
+public class EIUDFS2 {
 
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
-        List<Vertex> path = new ArrayList<>();
-
-        if (dfs(graph[0], path)) {
-            for (Vertex v : path) {
-                sb.append(v.id + " ");
-            }
-            System.out.println(sb);
-        }
+        dfs(graph[0]);
+        System.out.println(sb);
 
     }
 
-    public static boolean dfs(Vertex v, List<Vertex> path) {
+    public static void dfs(Vertex v) {
         v.visited = true;
-        path.add(v);
+        sb.append(v.id + " ");
 
         for (Vertex u : v.adjList) {
             if (!u.visited) {
-                //u.visited = true;
-                if (dfs(u, path)) {
-                    return true;
-                }
-            } else if (u.id == 0) {
-                return true;
+                dfs(u);
             }
         }
-
-        path.remove(path.size() - 1);
-        return false;
     }
 
     public static Vertex[] readGraph() {
@@ -43,17 +29,17 @@ public class EIPRF {
         int m = sc.nextInt();
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; ++i) {
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
             vertices[u].addAdjList(vertices[v]);
+            vertices[v].addAdjList(vertices[u]);
         }
-
         for (Vertex v : vertices) {
             v.adjList.sort((v1, v2) -> v1.id - v2.id);
         }
@@ -62,9 +48,9 @@ public class EIPRF {
 
     public static class Vertex {
 
-        public int id;
-        public boolean visited;
-        public List<Vertex> adjList = new ArrayList<>();
+        int id;
+        boolean visited;
+        List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;

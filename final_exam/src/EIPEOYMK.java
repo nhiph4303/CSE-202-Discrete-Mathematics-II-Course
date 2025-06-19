@@ -12,7 +12,7 @@ public class EIPEOYMK {
 
         bfs(graph[root]);
 
-        Map<Integer, List<Integer>> levelMap = new HashMap<>();
+        Map<Integer, ArrayList<Integer>> levelMap = new HashMap<>();
         for (Vertex v : graph) {
             if (!levelMap.containsKey(v.level)) {
                 levelMap.put(v.level, new ArrayList<>());
@@ -22,9 +22,9 @@ public class EIPEOYMK {
 
         int q = sc.nextInt();
         for (int i = 0; i < q; i++) {
-            int k = sc.nextInt();
+            int u = sc.nextInt();
 
-            List<Integer> friendList = levelMap.get(k);
+            List<Integer> friendList = levelMap.get(u);
 
             if (friendList == null) {
                 sb.append("-1\n");
@@ -35,7 +35,6 @@ public class EIPEOYMK {
                 sb.append("\n");
             }
         }
-
         System.out.println(sb);
     }
 
@@ -63,11 +62,11 @@ public class EIPEOYMK {
         int m = sc.nextInt();
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; ++i) {
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
@@ -78,15 +77,15 @@ public class EIPEOYMK {
         for (Vertex v : vertices) {
             v.adjList.sort((v1, v2) -> v1.id - v2.id);
         }
-
         return vertices;
     }
 
     public static class Vertex {
-        public int id;
-        public boolean visited;
-        public int level;
-        public List<Vertex> adjList = new ArrayList<>();
+
+        int id;
+        int level;
+        boolean visited;
+        List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;

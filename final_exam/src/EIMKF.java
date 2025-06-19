@@ -1,56 +1,40 @@
 
 import java.util.*;
 
-public class EIPRF {
+public class EIMKF {
 
     static Scanner sc = new Scanner(System.in);
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
         Vertex[] graph = readGraph();
-        List<Vertex> path = new ArrayList<>();
 
-        if (dfs(graph[0], path)) {
-            for (Vertex v : path) {
+        for (int i = 0; i < graph.length; i++) {
+            sb.append(graph[i].id + " " + graph[i].adjList.size() + " ");
+
+            for (Vertex v : graph[i].adjList) {
                 sb.append(v.id + " ");
             }
-            System.out.println(sb);
+            sb.append("\n");
         }
 
+        System.out.println(sb);
     }
 
-    public static boolean dfs(Vertex v, List<Vertex> path) {
-        v.visited = true;
-        path.add(v);
-
-        for (Vertex u : v.adjList) {
-            if (!u.visited) {
-                //u.visited = true;
-                if (dfs(u, path)) {
-                    return true;
-                }
-            } else if (u.id == 0) {
-                return true;
-            }
-        }
-
-        path.remove(path.size() - 1);
-        return false;
-    }
-
-    public static Vertex[] readGraph() {
+    static Vertex[] readGraph() {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
         Vertex[] vertices = new Vertex[n];
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             vertices[i] = new Vertex(i);
         }
 
-        for (int i = 0; i < m; ++i) {
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
+            vertices[v].addAdjList(vertices[u]);
             vertices[u].addAdjList(vertices[v]);
         }
 
@@ -60,10 +44,9 @@ public class EIPRF {
         return vertices;
     }
 
-    public static class Vertex {
+    static class Vertex {
 
         public int id;
-        public boolean visited;
         public List<Vertex> adjList = new ArrayList<>();
 
         public Vertex(int id) {
@@ -73,5 +56,6 @@ public class EIPRF {
         public void addAdjList(Vertex v) {
             adjList.add(v);
         }
+
     }
 }

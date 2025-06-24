@@ -14,11 +14,11 @@ public class EILOCAL2 {
         System.out.println(max);
     }
 
-    static void dfs(Vertex n, long sum) {
-        n.visited = true;
+    static void dfs(Vertex v, long sum) {
+        v.visited = true;
         max = Math.max(max, sum);
 
-        for (Edge e : n.edges) {
+        for (Edge e : v.edgeList) {
             if (!e.endPoint.visited) {
                 dfs(e.endPoint, sum + e.weight);
             }
@@ -37,17 +37,19 @@ public class EILOCAL2 {
             int v = sc.nextInt();
             int weight = sc.nextInt();
 
-            vertices[u].edges.add(new Edge(vertices[v], weight));
-            vertices[v].edges.add(new Edge(vertices[u], weight));
+            vertices[u].edgeList.add(new Edge(weight, vertices[v]));
+            vertices[v].edgeList.add(new Edge(weight, vertices[u]));
+
         }
 
         return vertices;
     }
 
     static class Vertex {
+
         int id;
         boolean visited;
-        List<Edge> edges = new ArrayList<>();
+        List<Edge> edgeList = new ArrayList<>();
 
         public Vertex(int id) {
             this.id = id;
@@ -55,12 +57,14 @@ public class EILOCAL2 {
     }
 
     static class Edge {
+
         long weight;
         Vertex endPoint;
 
-        public Edge(Vertex n, long w) {
-            this.endPoint = n;
-            this.weight = w;
+        public Edge(long weight, Vertex endPoint) {
+            this.weight = weight;
+            this.endPoint = endPoint;
         }
     }
+
 }

@@ -73,7 +73,6 @@ public class EIFBF2 {
     }
 
     static class Vertex {
-
         public int id;
         public String gender;
         public boolean visited;
